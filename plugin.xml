@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension point="org.eclipse.debug.core.launchConfigurationTypes">
+   		<launchConfigurationType
+	   		 id="LaunchConfigurationTyp"
+	   		 delegate="plugintest4.AnalyzerDelegate"
+	   		 modes="run, debug"
+	         name="TextAnalyzer">
+  		</launchConfigurationType>
+   </extension>
+  
+   <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+        <launchConfigurationTabGroup
+            type="LaunchConfigurationTyp"
+            class="plugintest4.AnalyzerTabGroup" 
+            id="plugintest4.AnalyzerTabGroup">
+        </launchConfigurationTabGroup>
+	</extension>
+   
+
+</plugin>
