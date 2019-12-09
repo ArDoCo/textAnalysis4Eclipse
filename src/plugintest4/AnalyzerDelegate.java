@@ -45,9 +45,8 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 		String subString = filename.substring(0, filename.length()-4);
 		String outputFileName = subString + "_analysis.xml";
 		
-		Document doc;
 		try {
-			doc = setupDocument();
+			Document doc = setupDocument();
 			Element root = setupRootInDoc(filename, doc);
 			
 			List<String> linesInFile = getLinesInFile(filename);
@@ -151,6 +150,7 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 			// count words:
 		    StringTokenizer tokens = new StringTokenizer(linesInFile.get(i));
 		    int count = tokens.countTokens();
+		    
 		    line.appendChild(doc.createTextNode(Integer.toString(count)));
 			wordCount.appendChild(line);
 		}
