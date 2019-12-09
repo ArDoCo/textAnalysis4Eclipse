@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -44,21 +45,66 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 		String subString = filename.substring(0, filename.length()-4);
 		String outputFileName = subString + "_analysis.xml";
 		
-		List<Integer> charsPerLine = getFileContent(filename);
-		writeXML(charsPerLine, outputFileName, filename);
+		Document doc;
+		try {
+			doc = setupDocument();
+			Element root = setupRootInDoc(filename, doc);
+			
+			List<String> linesInFile = getLinesInFile(filename);
+			addCharOutput(root, linesInFile, doc);		
+			
+			if (configuration.getAttribute(AnalyzerAttributes.WORD_COUNT, false)) {
+				addWordCountOutput(root, doc, linesInFile);
+			}
+			
+			saveAnalysisFile(outputFileName, doc);
+			
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerException tfe) {
+			tfe.printStackTrace();
+		} 
+	}
+	
+	private void saveAnalysisFile(String outputFileName, Document doc) throws TransformerException {
 		
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			Transformer transformer = transformerFactory.newTransformer();
+			DOMSource dmSource = new DOMSource(doc);
+			StreamResult result = new StreamResult(new File(outputFileName));
+			transformer.transform(dmSource, result);
 	}
 
-	private List<Integer> getFileContent(String filename) {
-		List<Integer> charsPerLine = new ArrayList<Integer>();
+	private Document setupDocument() throws ParserConfigurationException {
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+
+		Document doc = docBuilder.newDocument();
+		return doc;
+	}
+				
+	private Element setupRootInDoc(String inputFileName, Document doc) {
+		
+		Element rootElement = doc.createElement("Analysis");
+		doc.appendChild(rootElement);
+		
+		Element source = doc.createElement("Source");
+		source.setAttribute("file", inputFileName);
+		rootElement.appendChild(source);
+		
+		return rootElement;
+	}
+	
+	private List<String> getLinesInFile(String filename) {
+		List<String> linesInFile = new ArrayList<String>();
+		
 		try
 		  {
 		    BufferedReader reader = new BufferedReader(new FileReader(filename));
 		    String line;
 		    while ((line = reader.readLine()) != null)
 		    {
-		    	int lengthOfLine = line.length();
-		    	charsPerLine.add(lengthOfLine);
+		    	linesInFile.add(line);
 		    }
 		    reader.close();
 		  }
@@ -67,50 +113,48 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 		    System.err.format("Exception occurred trying to read '%s'.", filename);
 		    e.printStackTrace();
 		  }
-		return charsPerLine;
+		return linesInFile;
 	}
 	
-	private void writeXML(List<Integer> charsPerLine, String outputFileName, String sourceFile) {
-
-		  try {
-
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-			// root elements
-			Document doc = docBuilder.newDocument();
-			Element rootElement = doc.createElement("Analysis");
-			doc.appendChild(rootElement);
+	private void addCharOutput(Element rootElement, List<String> linesInFile, Document doc) {
+		
+		Element charCount = doc.createElement("Char-Count");
+		rootElement.appendChild(charCount);
+		
+		Element warnings = doc.createElement("Warnings");
+		charCount.appendChild(warnings);
+		
+		for (int i = 0; i < linesInFile.size(); i++) {
+			Element line = doc.createElement("line");
+			line.setAttribute("number", Integer.toString(i));
+			int lengthOfLine = linesInFile.get(i).length();
+			line.appendChild(doc.createTextNode(Integer.toString(lengthOfLine)));
+			charCount.appendChild(line);
 			
-			Element source = doc.createElement("Source");
-			source.setAttribute("file", sourceFile);
-			rootElement.appendChild(source);
-			
-			Element charCount = doc.createElement("Char-Count");
-			rootElement.appendChild(charCount);
-			
-			for (int i = 0; i < charsPerLine.size(); i++) {
-				Element line = doc.createElement("line");
-				line.setAttribute("number", Integer.toString(i));
-				line.appendChild(doc.createTextNode(Integer.toString(charsPerLine.get(i))));
-				charCount.appendChild(line);
+			if (lengthOfLine > 80) {
+				Element warn = doc.createElement("warn");
+				warn.setAttribute("line-number", Integer.toString(i));
+				warn.appendChild(doc.createTextNode("Line is too long (more than 80 characters)"));
+				warnings.appendChild(warn);
 			}
+		}
+	}
+
+	private void addWordCountOutput(Element root, Document doc, List<String> linesInFile) {
+		Element wordCount = doc.createElement("Word-Count");
+		root.appendChild(wordCount);
+		
+		for (int i = 0; i < linesInFile.size(); i++) {
+			Element line = doc.createElement("line");
+			line.setAttribute("number", Integer.toString(i));
 			
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-			DOMSource dmSource = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File(outputFileName));
+			// count words:
+		    StringTokenizer tokens = new StringTokenizer(linesInFile.get(i));
+		    int count = tokens.countTokens();
+		    line.appendChild(doc.createTextNode(Integer.toString(count)));
+			wordCount.appendChild(line);
+		}
+	}
 
-			transformer.transform(dmSource, result);
-
-			System.out.println("File saved!");
-
-		  } catch (ParserConfigurationException pce) {
-			pce.printStackTrace();
-		  } catch (TransformerException tfe) {
-			tfe.printStackTrace();
-		  }
-		  
-	}		
-
+	
 }

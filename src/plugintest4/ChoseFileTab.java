@@ -38,7 +38,8 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	private static final String[] txtFileExtensions = new String[] { "*.txt" };
 	private Button loadTxtFileButton;
 	private String dummy_text = "This is some dummy text";
-
+	private Button wordCountButton;
+	
 	@Override
 	public void createControl(Composite parent) {
 		final Composite container = new Composite(parent, SWT.NONE);
@@ -55,12 +56,21 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 			updateLaunchConfigurationDialog();
 		};
 
+		final SelectionListener checkboxSelectionListener = new SelectionAdapter () {
+	         public void widgetSelected(SelectionEvent event) {
+	             //Button button = ((Button) event.widget);
+	             //System.out.print(button.getText());
+	             //System.out.println(" selected = " + button.getSelection());
+	             setDirty(true);
+	 			 updateLaunchConfigurationDialog();
+	          };
+	       };
+		
 		Shell shell = getShell();
 
 		this.textTxtIn = new Text(container, SWT.SINGLE | SWT.BORDER);
 		this.textTxtIn.setToolTipText("Input txt file(s) [*.txt]");
 		this.textTxtIn.setText(dummy_text);
-		int containerWidth = container.getSize().x;
 		GridData gd1 = new GridData(800, 30);
 		this.textTxtIn.setLayoutData(gd1);
         this.textTxtIn.addModifyListener(modifyListener);
@@ -71,6 +81,11 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         final Button localFileSystemButton = new Button(container, SWT.NONE);
         localFileSystemButton.setText("Chose txt file...");
         localFileSystemButton.addSelectionListener(localFileSystemListener);
+        
+        this.wordCountButton = new Button (container, SWT.CHECK);
+        this.wordCountButton.setText("Count Words");
+        this.wordCountButton.addSelectionListener(checkboxSelectionListener);
+        
 	}
 
 
@@ -84,6 +99,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 		try {
 			String fileName = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, dummy_text);
 			this.textTxtIn.setText(fileName);
+			this.wordCountButton.setSelection(configuration.getAttribute(AnalyzerAttributes.WORD_COUNT, false));
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,6 +115,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 		if (file.exists()) {
 			configuration.setAttribute(AnalyzerAttributes.FILE_NAME, file_name);
 		}
+		configuration.setAttribute(AnalyzerAttributes.WORD_COUNT, this.wordCountButton.getSelection());
 		
 	}
 
