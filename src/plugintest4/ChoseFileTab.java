@@ -1,8 +1,10 @@
 package plugintest4;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
@@ -35,6 +37,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	private Text textTxtIn;
 	private static final String[] txtFileExtensions = new String[] { "*.txt" };
 	private Button loadTxtFileButton;
+	private String dummy_text = "This is some dummy text";
 
 	@Override
 	public void createControl(Composite parent) {
@@ -56,17 +59,18 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 		this.textTxtIn = new Text(container, SWT.SINGLE | SWT.BORDER);
 		this.textTxtIn.setToolTipText("Input txt file(s) [*.txt]");
+		this.textTxtIn.setText(dummy_text);
 		int containerWidth = container.getSize().x;
 		GridData gd1 = new GridData(800, 30);
 		this.textTxtIn.setLayoutData(gd1);
-
+        this.textTxtIn.addModifyListener(modifyListener);
+		
 		SelectionListener localFileSystemListener = new OpenLocalFileSystemButtonListener(textTxtIn,
 				txtFileExtensions, TEXT_LOAD_TXT_FILE, shell, true);
 
         final Button localFileSystemButton = new Button(container, SWT.NONE);
         localFileSystemButton.setText("Chose txt file...");
         localFileSystemButton.addSelectionListener(localFileSystemListener);
-                
 	}
 
 
@@ -76,25 +80,51 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	}
 
 	@Override
-	public void initializeFrom(ILaunchConfiguration arg0) {
-
+	public void initializeFrom(ILaunchConfiguration configuration) {
+		try {
+			String fileName = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, dummy_text);
+			this.textTxtIn.setText(fileName);
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Override
-	public void performApply(ILaunchConfigurationWorkingCopy arg0) {
-		// TODO Auto-generated method stub
-
+	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
+		System.out.println("perform apply");
+		String file_name = this.textTxtIn.getText();
+		File file = new File(file_name);
+		if (file.exists()) {
+			configuration.setAttribute(AnalyzerAttributes.FILE_NAME, file_name);
+		}
+		
 	}
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy arg0) {
 		// TODO Auto-generated method stub
 	}
-
-	public Image getImage() {
-		// return new Image(new Display(),
-		// "C:\\Users\\maike\\eclipse-workspace\\PluginTest4\\icons\\folder.png");
-		return null;
+	
+	@Override	
+	public boolean isValid(ILaunchConfiguration launchConfig) {
+		String	file_text = this.textTxtIn.getText();
+		File file = new File(file_text);
+		boolean exists = file.exists();  
+		return exists;
+	}
+	
+	@Override
+	protected boolean isDirty() {
+		System.out.println("is dirty");
+		return true;
 	}
 
+	@Override
+	public boolean canSave() {
+		System.out.println("can save");
+		return true;
+	}
+	
 }

@@ -6,7 +6,7 @@
    		<launchConfigurationType
 	   		 id="LaunchConfigurationTyp"
 	   		 delegate="plugintest4.AnalyzerDelegate"
-	   		 modes="run, debug"
+	   		 modes="run"
 	         name="TextAnalyzer">
   		</launchConfigurationType>
    </extension>
@@ -18,6 +18,14 @@
             id="plugintest4.AnalyzerTabGroup">
         </launchConfigurationTabGroup>
 	</extension>
-   
+	
+   <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+    <launchConfigurationTypeImage
+            id="launchconfigurationtypeimage"
+            configTypeID="LaunchConfigurationTyp"
+            icon="icons/analysis.png">
+    </launchConfigurationTypeImage>
+</extension>
+
 
 </plugin>

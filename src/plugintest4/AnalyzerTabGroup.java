@@ -9,11 +9,8 @@ public class AnalyzerTabGroup extends AbstractLaunchConfigurationTabGroup {
 	
 	  @Override
 	  public void createTabs(ILaunchConfigurationDialog arg0, String arg1) {
-	       setTabs(new ILaunchConfigurationTab[] { new ChoseFileTab(), new AnalysisTab() });
+	       setTabs(new ILaunchConfigurationTab[] { new ChoseFileTab()});
+	       // (TODO) add other tab into list
 	  }
-	  
-	  public void createTabs() {
-	        setTabs(new ILaunchConfigurationTab[] { new ChoseFileTab() });
-	    }
 
 }
