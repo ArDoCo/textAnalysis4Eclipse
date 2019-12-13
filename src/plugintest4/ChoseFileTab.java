@@ -33,6 +33,7 @@ import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
 public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 	// TODO output definieren können (niedrigere Prio)
+	// Dummy commit
 	
 	private Label helloText;
 	private static final String TEXT_LOAD_TXT_FILE = "Load txt File";
