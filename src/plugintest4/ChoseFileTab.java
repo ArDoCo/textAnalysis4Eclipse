@@ -32,6 +32,8 @@ import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
 
 public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
+	// TODO output definieren können (niedrigere Prio)
+	
 	private Label helloText;
 	private static final String TEXT_LOAD_TXT_FILE = "Load txt File";
 	private Text textTxtIn;
@@ -128,7 +130,10 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		String	file_text = this.textTxtIn.getText();
 		File file = new File(file_text);
-		boolean exists = file.exists();  
+		boolean exists = file.exists(); 
+		// TODO Secure it's a txt file
+		// TODO do splitting -> mehrere Dateien analysieren ist ok, für jede 1 output datei generieren. 
+		// TODO mind. 1 box gecheckt
 		return exists;
 	}
 	
