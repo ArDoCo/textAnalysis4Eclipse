@@ -2,7 +2,10 @@ package plugintest4;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -33,14 +36,14 @@ import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
 public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 	// TODO output definieren können (niedrigere Prio)
-	// Dummy commit
 	
 	private Label helloText;
 	private static final String TEXT_LOAD_TXT_FILE = "Load txt File";
 	private Text textTxtIn;
 	private static final String[] txtFileExtensions = new String[] { "*.txt" };
 	private Button loadTxtFileButton;
-	private String dummy_text = "This is some dummy text";
+	private List<String> dummy_text = new ArrayList<>();
+	private String dummy_text_text = "This is a dummy text";
 	private Button wordCountButton;
 	
 	@Override
@@ -73,7 +76,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 		this.textTxtIn = new Text(container, SWT.SINGLE | SWT.BORDER);
 		this.textTxtIn.setToolTipText("Input txt file(s) [*.txt]");
-		this.textTxtIn.setText(dummy_text);
+		this.textTxtIn.setText(dummy_text_text);
 		GridData gd1 = new GridData(800, 30);
 		this.textTxtIn.setLayoutData(gd1);
         this.textTxtIn.addModifyListener(modifyListener);
@@ -99,12 +102,17 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void initializeFrom(ILaunchConfiguration configuration) {
+		
 		try {
-			String fileName = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, dummy_text);
+			List<String> fileNames = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, dummy_text);
+			String fileName = String.join(";", fileNames);
 			this.textTxtIn.setText(fileName);
-			this.wordCountButton.setSelection(configuration.getAttribute(AnalyzerAttributes.WORD_COUNT, false));
+			
+			Map<String, String> checkbox_activation = configuration
+					.getAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
+			this.wordCountButton.setSelection(Boolean.valueOf(checkbox_activation.getOrDefault(AnalyzerAttributes.WORD_COUNT, "false")));
+
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -112,13 +120,15 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		System.out.println("perform apply");
-		String file_name = this.textTxtIn.getText();
-		File file = new File(file_name);
-		if (file.exists()) {
-			configuration.setAttribute(AnalyzerAttributes.FILE_NAME, file_name);
-		}
-		configuration.setAttribute(AnalyzerAttributes.WORD_COUNT, this.wordCountButton.getSelection());
+		System.out.println("perform Apply");
+		
+		List<String> file_names = Arrays.asList(this.textTxtIn.getText().split(";"));
+		configuration.setAttribute(AnalyzerAttributes.FILE_NAME, file_names);
+		
+		// We have to convert bools to string because attributes can either save only bool or a map of string,string.
+		Map<String, String> checkbox_activation = new HashMap<>(); 
+		checkbox_activation.put(AnalyzerAttributes.WORD_COUNT, Boolean.valueOf(this.wordCountButton.getSelection()).toString());
+		configuration.setAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, checkbox_activation);
 		
 	}
 
@@ -129,13 +139,23 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	
 	@Override	
 	public boolean isValid(ILaunchConfiguration launchConfig) {
-		String	file_text = this.textTxtIn.getText();
-		File file = new File(file_text);
-		boolean exists = file.exists(); 
-		// TODO Secure it's a txt file
-		// TODO do splitting -> mehrere Dateien analysieren ist ok, für jede 1 output datei generieren. 
+		String[] files = this.textTxtIn.getText().split(";");
+		
+		
+		boolean filesAreValid = true;
+
+		for (String file_text : files) {
+			File file = new File(file_text);
+
+			for (String f : txtFileExtensions) {
+				if (!((file.exists()) && (file.getName().endsWith(f.substring(1))))) {
+					filesAreValid = false;
+				}
+			}
+		}
 		// TODO mind. 1 box gecheckt
-		return exists;
+		return ((files.length > 0) && filesAreValid);
+		
 	}
 	
 	@Override

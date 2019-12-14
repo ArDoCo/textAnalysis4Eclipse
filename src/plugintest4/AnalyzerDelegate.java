@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -34,35 +36,42 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
  *
  */
 public class AnalyzerDelegate extends LaunchConfigurationDelegate {
-
+	// TODO generate one file per input file
+	
 	@Override
 	public void launch(ILaunchConfiguration configuration, String arg1, ILaunch arg2, IProgressMonitor arg3)
 			throws CoreException {
 		System.out.println("hello");
-		String filename = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, "none");
-		System.out.println(filename);
+		List<String> filenames = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, new ArrayList<String>());
 		
-		String subString = filename.substring(0, filename.length()-4);
-		String outputFileName = subString + "_analysis.xml";
+		for (String filename: filenames) {
+			String subString = filename.substring(0, filename.length()-4);
+			String outputFileName = subString + "_analysis.xml";
+			
+			try {
+				Document doc = setupDocument();
+				Element root = setupRootInDoc(filename, doc);
+				
+				List<String> linesInFile = getLinesInFile(filename);
+				addCharOutput(root, linesInFile, doc);		
+				
+				Map<String, String> checkbox_activation = configuration
+						.getAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
+				
+				if (Boolean.valueOf(checkbox_activation.get(AnalyzerAttributes.WORD_COUNT))) {
+					addWordCountOutput(root, doc, linesInFile);
+				}
+				
+				saveAnalysisFile(outputFileName, doc);
+				
+			} catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			} catch (TransformerException tfe) {
+				tfe.printStackTrace();
+			} 
+		}
 		
-		try {
-			Document doc = setupDocument();
-			Element root = setupRootInDoc(filename, doc);
-			
-			List<String> linesInFile = getLinesInFile(filename);
-			addCharOutput(root, linesInFile, doc);		
-			
-			if (configuration.getAttribute(AnalyzerAttributes.WORD_COUNT, false)) {
-				addWordCountOutput(root, doc, linesInFile);
-			}
-			
-			saveAnalysisFile(outputFileName, doc);
-			
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (TransformerException tfe) {
-			tfe.printStackTrace();
-		} 
+		
 	}
 	
 	private void saveAnalysisFile(String outputFileName, Document doc) throws TransformerException {
