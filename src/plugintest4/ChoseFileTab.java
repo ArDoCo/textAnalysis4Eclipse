@@ -44,10 +44,18 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	private Button loadTxtFileButton;
 	private List<String> dummy_text = new ArrayList<>();
 	private String dummy_text_text = "This is a dummy text";
-	private Button wordCountButton;
+	
+	private Map<String, Button> analysisButtons;
+	private List<IAnalysis> analysis;
+	
+	public ChoseFileTab(List<IAnalysis> analysis) {
+		this.analysis = analysis;
+		this.analysisButtons = new HashMap<>();
+	}
 	
 	@Override
 	public void createControl(Composite parent) {
+		// ---------- Setup Tab
 		final Composite container = new Composite(parent, SWT.NONE);
 		setControl(container);
 
@@ -57,6 +65,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 		this.helloText.setText("This Run Config lets you analyze text files. "
 				+ "Please chose a file here. Analysis can be chosen in the next Tab.");
 
+		// ---------- Create Listeners
 		final ModifyListener modifyListener = (ModifyEvent e) -> {
 			setDirty(true);
 			updateLaunchConfigurationDialog();
@@ -64,9 +73,6 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 		final SelectionListener checkboxSelectionListener = new SelectionAdapter () {
 	         public void widgetSelected(SelectionEvent event) {
-	             //Button button = ((Button) event.widget);
-	             //System.out.print(button.getText());
-	             //System.out.println(" selected = " + button.getSelection());
 	             setDirty(true);
 	 			 updateLaunchConfigurationDialog();
 	          };
@@ -74,6 +80,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 		
 		Shell shell = getShell();
 
+		// ---------- Load Files
 		this.textTxtIn = new Text(container, SWT.SINGLE | SWT.BORDER);
 		this.textTxtIn.setToolTipText("Input txt file(s) [*.txt]");
 		this.textTxtIn.setText(dummy_text_text);
@@ -88,10 +95,14 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         localFileSystemButton.setText("Chose txt file...");
         localFileSystemButton.addSelectionListener(localFileSystemListener);
         
-        this.wordCountButton = new Button (container, SWT.CHECK);
-        this.wordCountButton.setText("Count Words");
-        this.wordCountButton.addSelectionListener(checkboxSelectionListener);
-        
+        // ----------- Load Analysis
+        for (IAnalysis ana : analysis) {
+        	// create Button to chose Analysis
+        	Button b1 = new Button(container, SWT.CHECK);
+        	b1.setText(ana.getName());
+        	b1.addSelectionListener(checkboxSelectionListener);
+        	this.analysisButtons.put(ana.getName(), b1);
+        }   
 	}
 
 
@@ -110,8 +121,10 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 			
 			Map<String, String> checkbox_activation = configuration
 					.getAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
-			this.wordCountButton.setSelection(Boolean.valueOf(checkbox_activation.getOrDefault(AnalyzerAttributes.WORD_COUNT, "false")));
 
+			for (Map.Entry<String,String> entry : checkbox_activation.entrySet()) {
+				analysisButtons.get(entry.getKey()).setSelection(Boolean.valueOf(entry.getValue()));
+			}
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -127,7 +140,10 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 		
 		// We have to convert bools to string because attributes can either save only bool or a map of string,string.
 		Map<String, String> checkbox_activation = new HashMap<>(); 
-		checkbox_activation.put(AnalyzerAttributes.WORD_COUNT, Boolean.valueOf(this.wordCountButton.getSelection()).toString());
+		
+		for (Map.Entry<String, Button> entry : analysisButtons.entrySet()) {
+			checkbox_activation.put(entry.getKey(), Boolean.valueOf(entry.getValue().getSelection()).toString());
+		}
 		configuration.setAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, checkbox_activation);
 		
 	}
@@ -139,11 +155,10 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	
 	@Override	
 	public boolean isValid(ILaunchConfiguration launchConfig) {
+		
+		// if at least 1 file is specified and if alle specified files are valid
 		String[] files = this.textTxtIn.getText().split(";");
-		
-		
 		boolean filesAreValid = true;
-
 		for (String file_text : files) {
 			File file = new File(file_text);
 
@@ -153,9 +168,24 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 				}
 			}
 		}
-		// TODO mind. 1 box gecheckt
-		return ((files.length > 0) && filesAreValid);
 		
+		// ask Analysis if they are Valid
+		boolean analysisAreValid = true;
+		for (IAnalysis ana : analysis) {
+			if (!ana.isValid()) {
+				analysisAreValid = false;
+			}
+		}
+		
+		// if at least one Analysis is chosen
+		boolean atLeast1 = false;
+		for (Button b: analysisButtons.values()) {
+			if (b.getSelection()) {
+				atLeast1 = true;
+			}
+		}
+		
+		return ((files.length > 0) && filesAreValid && analysisAreValid && atLeast1);
 	}
 	
 	@Override

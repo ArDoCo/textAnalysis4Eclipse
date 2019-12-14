@@ -36,8 +36,7 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
  *
  */
 public class AnalyzerDelegate extends LaunchConfigurationDelegate {
-	// TODO generate one file per input file
-	
+		
 	@Override
 	public void launch(ILaunchConfiguration configuration, String arg1, ILaunch arg2, IProgressMonitor arg3)
 			throws CoreException {
@@ -53,13 +52,14 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 				Element root = setupRootInDoc(filename, doc);
 				
 				List<String> linesInFile = getLinesInFile(filename);
-				addCharOutput(root, linesInFile, doc);		
 				
 				Map<String, String> checkbox_activation = configuration
 						.getAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
 				
-				if (Boolean.valueOf(checkbox_activation.get(AnalyzerAttributes.WORD_COUNT))) {
-					addWordCountOutput(root, doc, linesInFile);
+				for (Map.Entry<String,String> entry : checkbox_activation.entrySet()) {
+					if (Boolean.valueOf(entry.getValue())) {
+						root.appendChild(AnalyzerAttributes.AnalysisRegistry.get(entry.getKey()).printInXML(doc, linesInFile));
+					}
 				}
 				
 				saveAnalysisFile(outputFileName, doc);
@@ -70,8 +70,6 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 				tfe.printStackTrace();
 			} 
 		}
-		
-		
 	}
 	
 	private void saveAnalysisFile(String outputFileName, Document doc) throws TransformerException {
@@ -122,47 +120,6 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 		    e.printStackTrace();
 		  }
 		return linesInFile;
-	}
-	
-	private void addCharOutput(Element rootElement, List<String> linesInFile, Document doc) {
-		
-		Element charCount = doc.createElement("Char-Count");
-		rootElement.appendChild(charCount);
-		
-		Element warnings = doc.createElement("Warnings");
-		charCount.appendChild(warnings);
-		
-		for (int i = 0; i < linesInFile.size(); i++) {
-			Element line = doc.createElement("line");
-			line.setAttribute("number", Integer.toString(i));
-			int lengthOfLine = linesInFile.get(i).length();
-			line.appendChild(doc.createTextNode(Integer.toString(lengthOfLine)));
-			charCount.appendChild(line);
-			
-			if (lengthOfLine > 80) {
-				Element warn = doc.createElement("warn");
-				warn.setAttribute("line-number", Integer.toString(i));
-				warn.appendChild(doc.createTextNode("Line is too long (more than 80 characters)"));
-				warnings.appendChild(warn);
-			}
-		}
-	}
-
-	private void addWordCountOutput(Element root, Document doc, List<String> linesInFile) {
-		Element wordCount = doc.createElement("Word-Count");
-		root.appendChild(wordCount);
-		
-		for (int i = 0; i < linesInFile.size(); i++) {
-			Element line = doc.createElement("line");
-			line.setAttribute("number", Integer.toString(i));
-			
-			// count words:
-		    StringTokenizer tokens = new StringTokenizer(linesInFile.get(i));
-		    int count = tokens.countTokens();
-		    
-		    line.appendChild(doc.createTextNode(Integer.toString(count)));
-			wordCount.appendChild(line);
-		}
 	}
 
 	
