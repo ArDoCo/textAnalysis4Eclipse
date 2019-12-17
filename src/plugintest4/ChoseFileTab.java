@@ -21,6 +21,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+
+import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
+import plugintest4.listener.fileopening.OpenWorkspaceButtonListener;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -29,9 +33,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
- 
-import plugintest4.listener.fileopening.OpenWorkspaceButtonListener;
-import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
 
 public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
