@@ -9,7 +9,9 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -25,6 +27,9 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import plugintest4.serviceproviders.ExecutionServiceProvider;
+import plugintest4.serviceproviders.NameServiceProvider;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
@@ -36,23 +41,35 @@ import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
  *
  */
 public class AnalyzerDelegate extends LaunchConfigurationDelegate {
+	
+	// TODO hier evtl. erst die analysis-objekte laden, im tab nur static constanten zu namen abrufen.
+	// TODO oder eigene launchconfig schreiben, die analyse-objekte speichern kann.
+	// TODO basic test überlegen / implementieren; es gibt auch SWTBot tests (siehe vogella), ui test als bonus
+	
+	// TODO bis 13.1. analyse loading, maven tycho verbessern als prio2
 		
 	@Override
 	public void launch(ILaunchConfiguration configuration, String arg1, ILaunch arg2, IProgressMonitor arg3)
 			throws CoreException {
+		
 		System.out.println("hello");
+		
 		List<String> filenames = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, new ArrayList<String>());
+        ServiceLoader<ExecutionServiceProvider> executionServices = ServiceLoader.load(ExecutionServiceProvider.class);
 		
 		for (String filename: filenames) {
-			String subString = filename.substring(0, filename.length()-4);
+			String subString = filename.substring(0, filename.length()-4); // TODO 4 rausziehen
 			String outputFileName = subString + "_analysis.xml";
 			
 			try {
+				
+				// ---- Preprocessing
 				Document doc = setupDocument();
 				Element root = setupRootInDoc(filename, doc);
 				
 				List<String> linesInFile = getLinesInFile(filename);
-				
+	
+				// ---- Analysis
 				Map<String, String> checkbox_activation = configuration
 						.getAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
 				
@@ -62,6 +79,43 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 					}
 				}
 				
+				// ---- Services  // two options to load:
+				// 1:  (hat ein Problem! TODO)
+				List<ExecutionServiceProvider> services1 = new LinkedList<>();
+				List<String> serviceClassNames = configuration
+						.getAttribute(AnalyzerAttributes.EXECUTION_SERVICE_CLASS_NAMES, new LinkedList<String>());
+				for (String s : serviceClassNames) {
+					try {
+						Object o = Class.forName(s).newInstance(); // braucht das noch ein .class ?
+							if (o instanceof ExecutionServiceProvider) {
+								ExecutionServiceProvider service = (ExecutionServiceProvider) o;
+								services1.add(service);
+								// jetzt sind halt alle services in dieser Liste, auch wenn sie gar nicht angechekt wurden.
+							}
+						}
+					catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
+				// 2: 
+				Map<String, String> servicesCheckboxes = configuration
+						.getAttribute(AnalyzerAttributes.SERVICE_CHECKBOX_VALUES, new HashMap<String, String>()); 
+
+				List<ExecutionServiceProvider> services2 = new LinkedList<>();
+				ServiceLoader<ExecutionServiceProvider> eServices = ServiceLoader.load(ExecutionServiceProvider.class);
+				for (ExecutionServiceProvider service : eServices) {
+					if (servicesCheckboxes.containsKey(service.getName()) 
+						&& Boolean.valueOf(servicesCheckboxes.get(service.getName()))) {
+						services2.add(service);
+					}
+				}
+
+				// ---- execute Services (könnte man auch direkt zum Laden bei 2 dazu packen)
+				for (ExecutionServiceProvider ser : services2) {
+					root.appendChild(ser.printInXML(doc, linesInFile));
+				}
+					
 				saveAnalysisFile(outputFileName, doc);
 				
 			} catch (ParserConfigurationException e) {

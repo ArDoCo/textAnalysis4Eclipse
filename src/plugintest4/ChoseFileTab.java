@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -24,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 
 import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
 import plugintest4.listener.fileopening.OpenWorkspaceButtonListener;
+import plugintest4.serviceproviders.NameServiceProvider;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
@@ -37,6 +40,7 @@ import org.eclipse.swt.events.SelectionListener;
 public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 	// TODO output definieren können (niedrigere Prio)
+	// TODO choose all, choose non button
 	
 	private Label helloText;
 	private static final String TEXT_LOAD_TXT_FILE = "Load txt File";
@@ -49,9 +53,17 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	private Map<String, Button> analysisButtons;
 	private List<IAnalysis> analysis;
 	
+	private Map<String, Button> serviceButtons;
+	private List<NameServiceProvider> services;
+	private List<String> executionServiceClassNames;
+	
 	public ChoseFileTab(List<IAnalysis> analysis) {
 		this.analysis = analysis;
 		this.analysisButtons = new HashMap<>();
+		
+		this.serviceButtons = new HashMap<>();
+		this.services = new LinkedList<>();
+		this.executionServiceClassNames = new LinkedList<String>();
 	}
 	
 	@Override
@@ -104,6 +116,17 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         	b1.addSelectionListener(checkboxSelectionListener);
         	this.analysisButtons.put(ana.getName(), b1);
         }   
+        
+        // ----------- Load Analysis from Service Providers
+        ServiceLoader<NameServiceProvider> nameServices = ServiceLoader.load(NameServiceProvider.class);
+		for (NameServiceProvider service : nameServices) {
+			Button b1 = new Button(container, SWT.CHECK);
+        	b1.setText(service.getName());
+        	b1.addSelectionListener(checkboxSelectionListener);
+        	this.serviceButtons.put(service.getName(), b1);
+        	this.services.add(service);
+        	this.executionServiceClassNames.add(service.getExecutionServiceProviderName());
+		}
 	}
 
 
@@ -113,19 +136,31 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	}
 
 	@Override
-	public void initializeFrom(ILaunchConfiguration configuration) {
+	public void initializeFrom(ILaunchConfiguration configuration) { 
 		
 		try {
+			
+			// ---- Files
 			List<String> fileNames = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, dummy_text);
 			String fileName = String.join(";", fileNames);
 			this.textTxtIn.setText(fileName);
 			
+			// ---- Analysis
 			Map<String, String> checkbox_activation = configuration
 					.getAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
-
 			for (Map.Entry<String,String> entry : checkbox_activation.entrySet()) {
 				analysisButtons.get(entry.getKey()).setSelection(Boolean.valueOf(entry.getValue()));
 			}
+			
+			// ---- Services
+			Map<String, String> service_checkbox_values = configuration
+					.getAttribute(AnalyzerAttributes.SERVICE_CHECKBOX_VALUES, new HashMap<String, String>());
+			for (Map.Entry<String,String> service_entry : service_checkbox_values.entrySet()) {
+				serviceButtons.get(service_entry.getKey()).setSelection(Boolean.valueOf(service_entry.getValue()));
+			}
+			this.executionServiceClassNames = 
+					configuration.getAttribute(AnalyzerAttributes.EXECUTION_SERVICE_CLASS_NAMES, new LinkedList<String>());
+			
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -133,12 +168,14 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	}
 
 	@Override
-	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
+	public void performApply(ILaunchConfigurationWorkingCopy configuration) { 
 		System.out.println("perform Apply");
 		
+		// ---- Files
 		List<String> file_names = Arrays.asList(this.textTxtIn.getText().split(";"));
 		configuration.setAttribute(AnalyzerAttributes.FILE_NAME, file_names);
 		
+		// ---- Analysis
 		// We have to convert bools to string because attributes can either save only bool or a map of string,string.
 		Map<String, String> checkbox_activation = new HashMap<>(); 
 		
@@ -146,6 +183,16 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 			checkbox_activation.put(entry.getKey(), Boolean.valueOf(entry.getValue().getSelection()).toString());
 		}
 		configuration.setAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, checkbox_activation);
+		
+		// ---- Services
+		Map<String, String> service_activation = new HashMap<>(); 
+		
+		for (Map.Entry<String, Button> sEntry : serviceButtons.entrySet()) {
+			service_activation.put(sEntry.getKey(), Boolean.valueOf(sEntry.getValue().getSelection()).toString());
+		}
+		configuration.setAttribute(AnalyzerAttributes.SERVICE_CHECKBOX_VALUES, service_activation);
+		
+		configuration.setAttribute(AnalyzerAttributes.EXECUTION_SERVICE_CLASS_NAMES, executionServiceClassNames);
 		
 	}
 
@@ -157,7 +204,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	@Override	
 	public boolean isValid(ILaunchConfiguration launchConfig) {
 		
-		// if at least 1 file is specified and if alle specified files are valid
+		// if at least 1 file is specified and if all specified files are valid
 		String[] files = this.textTxtIn.getText().split(";");
 		boolean filesAreValid = true;
 		for (String file_text : files) {
@@ -178,6 +225,13 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 			}
 		}
 		
+		boolean servicesAreValid = true;
+		for (NameServiceProvider s : services) {
+			if (!s.isValid()) {
+				servicesAreValid = false;
+			}
+		}
+		
 		// if at least one Analysis is chosen
 		boolean atLeast1 = false;
 		for (Button b: analysisButtons.values()) {
@@ -186,17 +240,24 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 			}
 		}
 		
-		return ((files.length > 0) && filesAreValid && analysisAreValid && atLeast1);
+		boolean atLeast1s = false;
+		for (Button bs: serviceButtons.values()) {
+			if (bs.getSelection()) {
+				atLeast1s = true;
+			}
+		}
+		
+		return ((files.length > 0) && filesAreValid && analysisAreValid && atLeast1 && servicesAreValid && atLeast1s);
 	}
 	
 	@Override
-	protected boolean isDirty() {
+	protected boolean isDirty() { // TODO
 		System.out.println("is dirty");
 		return true;
 	}
 
 	@Override
-	public boolean canSave() {
+	public boolean canSave() { // TODO
 		System.out.println("can save");
 		return true;
 	}
