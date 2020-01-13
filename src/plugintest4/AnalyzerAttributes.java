@@ -1,6 +1,11 @@
 package plugintest4;
 
 import java.util.Map;
+import java.io.File;
+import java.io.FileFilter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public class AnalyzerAttributes {
 	
@@ -17,6 +22,31 @@ public class AnalyzerAttributes {
 	
 	// TODO is there a more pretty Way to register the Analysis so the Delegate can use them?
 	public static Map<String, IAnalysis> AnalysisRegistry;
+	
+	protected static URLClassLoader getURLCL() {
+		 File loc = new File("C:\\Maike\\KIT\\PraktikumWfAM\\Analysis");
+
+	     File[] flist = loc.listFiles(new FileFilter() {
+	     	public boolean accept(File file) {return file.getPath().toLowerCase().endsWith(".jar");}
+	     });
+	     System.out.println("file list: " + flist.length);
+	     
+	     URL[] urls = new URL[flist.length];
+	     for (int i = 0; i < flist.length; i++)
+			try {
+				urls[i] = flist[i].toURI().toURL();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+	     
+	     System.out.println("url list: " + urls.length);
+	     System.out.println(flist[0]);
+	     System.out.println(urls[0]);
+	     URLClassLoader ucl = new URLClassLoader(urls);
+	     
+	     return ucl;
+	}
+	
 	
     private AnalyzerAttributes() {
     }

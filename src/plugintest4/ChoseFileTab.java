@@ -118,8 +118,12 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         }   
         
         // ----------- Load Analysis from Service Providers
-        ServiceLoader<NameServiceProvider> nameServices = ServiceLoader.load(NameServiceProvider.class);
-		for (NameServiceProvider service : nameServices) {
+        ClassLoader classloader = AnalyzerAttributes.getURLCL();
+        // Ich denke das problem ist entweder im Class loader oder im analyse Plugin
+        ServiceLoader<NameServiceProvider> nameServices = 
+        		ServiceLoader.load(NameServiceProvider.class, classloader);
+        for (NameServiceProvider service : nameServices) {
+        	System.out.println("in service loop");
 			Button b1 = new Button(container, SWT.CHECK);
         	b1.setText(service.getName());
         	b1.addSelectionListener(checkboxSelectionListener);
@@ -157,6 +161,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 					.getAttribute(AnalyzerAttributes.SERVICE_CHECKBOX_VALUES, new HashMap<String, String>());
 			for (Map.Entry<String,String> service_entry : service_checkbox_values.entrySet()) {
 				serviceButtons.get(service_entry.getKey()).setSelection(Boolean.valueOf(service_entry.getValue()));
+				// TODO abfangen wenn jetzt nicht die gleichen Analysen geladen werden als beim letzten mal
 			}
 			this.executionServiceClassNames = 
 					configuration.getAttribute(AnalyzerAttributes.EXECUTION_SERVICE_CLASS_NAMES, new LinkedList<String>());
