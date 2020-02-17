@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<units size='1'>
+  <unit id='PluginTest4' version='1.0.0.201912170952' generation='2'>
+    <update id='PluginTest4' range='[0.0.0,1.0.0.201912170952)' severity='0'/>
+    <properties size='4'>
+      <property name='org.eclipse.equinox.p2.name' value='PluginTest4'/>
+      <property name='maven-groupId' value='PluginTest4'/>
+      <property name='maven-artifactId' value='PluginTest4'/>
+      <property name='maven-version' value='1.0.0-SNAPSHOT'/>
+    </properties>
+    <provides size='4'>
+      <provided namespace='org.eclipse.equinox.p2.iu' name='PluginTest4' version='1.0.0.201912170952'/>
+      <provided namespace='osgi.bundle' name='PluginTest4' version='1.0.0.201912170952'/>
+      <provided namespace='osgi.identity' name='PluginTest4' version='1.0.0.201912170952'>
+        <properties size='1'>
+          <property name='type' value='osgi.bundle'/>
+        </properties>
+      </provided>
+      <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+    </provides>
+    <requires size='11'>
+      <required namespace='osgi.bundle' name='org.eclipse.ui' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.core.runtime' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.apache.felix.scr' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.equinox.util' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.equinox.event' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.debug.core' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.debug.ui' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.ui.ide' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.emf.common.ui' range='0.0.0'/>
+      <required namespace='osgi.bundle' name='org.eclipse.emf.ecore' range='0.0.0'/>
+      <requiredProperties namespace='osgi.ee' match='(&amp;(osgi.ee=JavaSE)(version=1.8))'/>
+    </requires>
+    <artifacts size='1'>
+      <artifact classifier='osgi.bundle' id='PluginTest4' version='1.0.0.201912170952'/>
+    </artifacts>
+    <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+    <touchpointData size='1'>
+      <instructions size='1'>
+        <instruction key='manifest'>
+          Bundle-SymbolicName: PluginTest4;singleton:=true&#xA;Bundle-Version: 1.0.0.201912170952&#xA;
+        </instruction>
+      </instructions>
+    </touchpointData>
+  </unit>
+</units>

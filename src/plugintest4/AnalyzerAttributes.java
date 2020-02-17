@@ -17,7 +17,6 @@ public class AnalyzerAttributes {
 	//      wenn eine abgeklickt wird müsste man sie halt immer aus der Liste löschen, das ist wahrscheinlich zu aufwändig.
 	public static final String CHECKBOX_ACTIVATION = "edu.kit.analyzer.CHECKBOX_ACTIVATION";
 	public static final String SERVICE_CHECKBOX_VALUES = "edu.kit.analyzer.SERVICE_CHECKBOX_VALUES";
-	
 	public static final String EXECUTION_SERVICE_CLASS_NAMES = "edu.kit.analyzer.EXECUTION_SERVICE_CLASS_NAMES";
 	
 	// TODO is there a more pretty Way to register the Analysis so the Delegate can use them?
@@ -38,6 +37,15 @@ public class AnalyzerAttributes {
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
+	     
+	     //URL[] classLoaderUrls = new URL[]{new URL("file:///C://Maike//KIT//PraktikumWfAM//Analysis//bean.jar")};
+	    URL[] classLoaderUrls = null;
+		try {
+			classLoaderUrls = new URL[]{new URL("file:///C://Maike//KIT//PraktikumWfAM//Analysis/dcountservice-0.0.1-SNAPSHOT.jar")};
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	     
 	     System.out.println("url list: " + urls.length);
 	     System.out.println(flist[0]);

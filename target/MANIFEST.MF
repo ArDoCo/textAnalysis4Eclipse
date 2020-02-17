@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PluginTest4
+Bundle-SymbolicName: PluginTest4;singleton:=true
+Bundle-Version: 1.0.0.201912170952
+Bundle-Activator: plugintest4.Activator
+Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime,org.apache.felix
+ .scr,org.eclipse.equinox.util,org.eclipse.equinox.event,org.eclipse.deb
+ ug.core,org.eclipse.debug.ui,org.eclipse.ui.ide,org.eclipse.emf.common.
+ ui,org.eclipse.emf.ecore
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: PluginTest4
+Bundle-ActivationPolicy: lazy
+

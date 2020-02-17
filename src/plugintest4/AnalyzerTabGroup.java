@@ -14,6 +14,8 @@ import plugintest4.analysis.WordCountAnalysis;
 
 public class AnalyzerTabGroup extends AbstractLaunchConfigurationTabGroup {
 	
+	  // TODO fancy analysen mit eigenem tab am ende.  
+	
 	  @Override
 	  public void createTabs(ILaunchConfigurationDialog arg0, String arg1) {
 		  List<IAnalysis> analysisList = Arrays.asList(new CharCountAnalyis(), new WordCountAnalysis());

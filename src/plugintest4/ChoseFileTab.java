@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Text;
 
 import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
 import plugintest4.listener.fileopening.OpenWorkspaceButtonListener;
+import plugintest4.serviceproviders.ExecutionServiceProvider;
 import plugintest4.serviceproviders.NameServiceProvider;
 
 import org.eclipse.swt.SWT;
@@ -37,10 +38,21 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 
-public class ChoseFileTab extends AbstractLaunchConfigurationTab {
+public class ChoseFileTab extends m {
 
 	// TODO output definieren können (niedrigere Prio)
 	// TODO choose all, choose non button
+	// TODO button um location von analysen auszuwählen. 
+	// TODO vielleicht auch in den eclipse plugins nach analysen schauen 
+	// 		-> service als eclipse plugin seiehe openEmfPackageButtonListener (wenn kein Aufwand)
+	
+	// stanford core nlp und dann sätze aufsplitten, wörter pro satz, warnung bei > 24 
+	// regelwerk von "den sophisten" für das Schreiben von requirements 
+	//        -> mal noch in swt2 folien schauen
+	// oder txt mit dictionary einbinden und nach schreibfehlern schauen
+	// fortgeschrittener: language tool 
+	
+	// bis mitte februar die haupt-dinge fertig haben
 	
 	private Label helloText;
 	private static final String TEXT_LOAD_TXT_FILE = "Load txt File";
@@ -119,9 +131,22 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         
         // ----------- Load Analysis from Service Providers
         ClassLoader classloader = AnalyzerAttributes.getURLCL();
-        // Ich denke das problem ist entweder im Class loader oder im analyse Plugin
+        // Ich denke das problem ist entweder im Class loader oder im analyse Pluginm
         ServiceLoader<NameServiceProvider> nameServices = 
         		ServiceLoader.load(NameServiceProvider.class, classloader);
+        ServiceLoader<ExecutionServiceProvider> executionnameServices = 
+        		ServiceLoader.load(ExecutionServiceProvider.class, classloader);
+        
+        System.out.println("classpath=" + System.getProperty("java.class.path")); 
+        
+        for (ExecutionServiceProvider service : executionnameServices) {
+        	System.out.println("Im an execution service");
+        }
+        
+        for (NameServiceProvider service : nameServices) {
+        	System.out.println("Im a service");
+        }
+        
         for (NameServiceProvider service : nameServices) {
         	System.out.println("in service loop");
 			Button b1 = new Button(container, SWT.CHECK);
