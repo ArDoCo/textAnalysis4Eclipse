@@ -26,9 +26,7 @@ import org.eclipse.swt.widgets.Text;
 
 import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
 import plugintest4.listener.fileopening.OpenWorkspaceButtonListener;
-import plugintest4.serviceproviders.ExecutionServiceProvider;
-import plugintest4.serviceproviders.NameServiceProvider;
-
+import providerplugin.MyProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -38,7 +36,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 
-public class ChoseFileTab extends m {
+public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 	// TODO output definieren können (niedrigere Prio)
 	// TODO choose all, choose non button
@@ -63,18 +61,27 @@ public class ChoseFileTab extends m {
 	private String dummy_text_text = "This is a dummy text";
 	
 	private Map<String, Button> analysisButtons;
-	private List<IAnalysis> analysis;
+	private List<MyProvider> analysis;
 	
 	private Map<String, Button> serviceButtons;
-	private List<NameServiceProvider> services;
+	//private List<NameServiceProvider> services;
 	private List<String> executionServiceClassNames;
 	
-	public ChoseFileTab(List<IAnalysis> analysis) {
-		this.analysis = analysis;
+//	public ChoseFileTab(List<IAnalysis> analysis) {
+//		this.analysis = analysis;
+//		this.analysisButtons = new HashMap<>();
+//		
+//		this.serviceButtons = new HashMap<>();
+//		this.services = new LinkedList<>();
+//		this.executionServiceClassNames = new LinkedList<String>();
+//	}
+	
+	public ChoseFileTab() {
+		this.analysis = new LinkedList<>();
 		this.analysisButtons = new HashMap<>();
 		
 		this.serviceButtons = new HashMap<>();
-		this.services = new LinkedList<>();
+		//this.services = new LinkedList<>();
 		this.executionServiceClassNames = new LinkedList<String>();
 	}
 	
@@ -121,40 +128,36 @@ public class ChoseFileTab extends m {
         localFileSystemButton.addSelectionListener(localFileSystemListener);
         
         // ----------- Load Analysis
-        for (IAnalysis ana : analysis) {
-        	// create Button to chose Analysis
-        	Button b1 = new Button(container, SWT.CHECK);
-        	b1.setText(ana.getName());
-        	b1.addSelectionListener(checkboxSelectionListener);
-        	this.analysisButtons.put(ana.getName(), b1);
-        }   
+//        for (IAnalysis ana : analysis) {
+//        	// create Button to chose Analysis
+//        	Button b1 = new Button(container, SWT.CHECK);
+//        	b1.setText(ana.getName());
+//        	b1.addSelectionListener(checkboxSelectionListener);
+//        	this.analysisButtons.put(ana.getName(), b1);
+//        }   
         
         // ----------- Load Analysis from Service Providers
         ClassLoader classloader = AnalyzerAttributes.getURLCL();
-        // Ich denke das problem ist entweder im Class loader oder im analyse Pluginm
-        ServiceLoader<NameServiceProvider> nameServices = 
-        		ServiceLoader.load(NameServiceProvider.class, classloader);
-        ServiceLoader<ExecutionServiceProvider> executionnameServices = 
-        		ServiceLoader.load(ExecutionServiceProvider.class, classloader);
-        
+        System.out.println("in Chose file Tab: load analysis now");
+        ServiceLoader<MyProvider> nameServices = 
+        		ServiceLoader.load(MyProvider.class, classloader);
+//        ServiceLoader<ExecutionServiceProvider> executionnameServices = 
+//        		ServiceLoader.load(ExecutionServiceProvider.class, classloader);
+//        
         System.out.println("classpath=" + System.getProperty("java.class.path")); 
         
-        for (ExecutionServiceProvider service : executionnameServices) {
-        	System.out.println("Im an execution service");
-        }
-        
-        for (NameServiceProvider service : nameServices) {
+        for (MyProvider service : nameServices) {
         	System.out.println("Im a service");
         }
         
-        for (NameServiceProvider service : nameServices) {
+        for (MyProvider service : nameServices) {
         	System.out.println("in service loop");
 			Button b1 = new Button(container, SWT.CHECK);
         	b1.setText(service.getName());
         	b1.addSelectionListener(checkboxSelectionListener);
         	this.serviceButtons.put(service.getName(), b1);
-        	this.services.add(service);
-        	this.executionServiceClassNames.add(service.getExecutionServiceProviderName());
+        	this.analysis.add(service);
+        	this.executionServiceClassNames.add(service.getName());
 		}
 	}
 
@@ -249,18 +252,18 @@ public class ChoseFileTab extends m {
 		
 		// ask Analysis if they are Valid
 		boolean analysisAreValid = true;
-		for (IAnalysis ana : analysis) {
-			if (!ana.isValid()) {
-				analysisAreValid = false;
-			}
-		}
+//		for (IAnalysis ana : analysis) {
+//			if (!ana.isValid()) {
+//				analysisAreValid = false;
+//			}
+//		}
 		
 		boolean servicesAreValid = true;
-		for (NameServiceProvider s : services) {
-			if (!s.isValid()) {
-				servicesAreValid = false;
-			}
-		}
+//		for (NameServiceProvider s : services) { TODO
+//			if (!s.isValid()) {
+//				servicesAreValid = false;
+//			}
+//		}
 		
 		// if at least one Analysis is chosen
 		boolean atLeast1 = false;

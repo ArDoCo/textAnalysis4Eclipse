@@ -5,9 +5,9 @@ import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import plugintest4.IAnalysis;
+import provider.AProvider;
 
-public class CharCountAnalyis implements IAnalysis {
+public class CharCountAnalyis implements AProvider {
 
 	@Override
 	public String getName() {

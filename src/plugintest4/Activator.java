@@ -1,6 +1,7 @@
 package plugintest4;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -23,6 +24,9 @@ public class Activator extends AbstractUIPlugin {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		Bundle[] bundles = context.getBundles(); // TODO hier vielleicht schauen welche plugins installiert sind
+		System.out.print("In Activator start: Bundles from Context length: ");
+		System.out.println(bundles.length);
 		plugin = this;
 	}
 

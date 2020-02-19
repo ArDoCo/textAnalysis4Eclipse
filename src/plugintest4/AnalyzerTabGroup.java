@@ -18,15 +18,17 @@ public class AnalyzerTabGroup extends AbstractLaunchConfigurationTabGroup {
 	
 	  @Override
 	  public void createTabs(ILaunchConfigurationDialog arg0, String arg1) {
-		  List<IAnalysis> analysisList = Arrays.asList(new CharCountAnalyis(), new WordCountAnalysis());
-		  AnalyzerAttributes.AnalysisRegistry = new HashMap<String, IAnalysis>();
-		  
-		  for (IAnalysis ana: analysisList) {
-				// register Analysis so Delegate can use them later
-		      	AnalyzerAttributes.AnalysisRegistry.put(ana.getName(), ana);
-		  }
+//		  List<IAnalysis> analysisList = Arrays.asList(new CharCountAnalyis(), new WordCountAnalysis());
+//		  AnalyzerAttributes.AnalysisRegistry = new HashMap<String, IAnalysis>();
+//		  
+//		  for (IAnalysis ana: analysisList) {
+//				// register Analysis so Delegate can use them later
+//		      	AnalyzerAttributes.AnalysisRegistry.put(ana.getName(), ana);
+//		  }
 		  		  
-	      setTabs(new ILaunchConfigurationTab[] { new ChoseFileTab(analysisList)});
+	      //setTabs(new ILaunchConfigurationTab[] { new ChoseFileTab(analysisList)});
+	      setTabs(new ILaunchConfigurationTab[] {new ChoseFileTab() });
+
 	      
 	       // (TODO) add other tab into list
 	       // TODO geht das dynamisch? (ServiceLoader.load(Interface.class)) es gibt da nen stackoverflow 

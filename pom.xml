@@ -27,7 +27,7 @@
 
 <build>
   <plugins>
-
+  
    <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-compiler-plugin</artifactId>
@@ -36,6 +36,7 @@
       <release>${java.version}</release>
     </configuration>
   </plugin>
+
 
   <plugin>
     <groupId>org.eclipse.tycho</groupId>

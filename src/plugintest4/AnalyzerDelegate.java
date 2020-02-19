@@ -27,8 +27,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import plugintest4.serviceproviders.ExecutionServiceProvider;
-import plugintest4.serviceproviders.NameServiceProvider;
+import providerplugin.MyProvider;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,8 +54,9 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 		System.out.println("hello");
 		
 		List<String> filenames = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, new ArrayList<String>());
-        ServiceLoader<ExecutionServiceProvider> executionServices = ServiceLoader.load(ExecutionServiceProvider.class);
+        ServiceLoader<MyProvider> executionServices = ServiceLoader.load(MyProvider.class);
 		
+        // für jedes file eigene analyse:
 		for (String filename: filenames) {
 			String subString = filename.substring(0, filename.length()-4); // TODO 4 rausziehen
 			String outputFileName = subString + "_analysis.xml";
@@ -81,40 +81,40 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 				
 				// ---- Services  // two options to load:
 				// 1:  (hat ein Problem! TODO)
-				List<ExecutionServiceProvider> services1 = new LinkedList<>();
-				List<String> serviceClassNames = configuration
-						.getAttribute(AnalyzerAttributes.EXECUTION_SERVICE_CLASS_NAMES, new LinkedList<String>());
-				for (String s : serviceClassNames) {
-					try {
-						Object o = Class.forName(s).newInstance(); // braucht das noch ein .class ?
-							if (o instanceof ExecutionServiceProvider) {
-								ExecutionServiceProvider service = (ExecutionServiceProvider) o;
-								services1.add(service);
-								// jetzt sind halt alle services in dieser Liste, auch wenn sie gar nicht angechekt wurden.
-							}
-						}
-					catch(Exception e) {
-						e.printStackTrace();
-					}
-				}
+				List<MyProvider> services1 = new LinkedList<>();
+//				List<String> serviceClassNames = configuration TODO
+//						.getAttribute(AnalyzerAttributes.EXECUTION_SERVICE_CLASS_NAMES, new LinkedList<String>());
+//				for (String s : serviceClassNames) {
+//					try {
+//						Object o = Class.forName(s).newInstance(); // braucht das noch ein .class ?
+//							if (o instanceof ExecutionServiceProvider) {
+//								ExecutionServiceProvider service = (ExecutionServiceProvider) o;
+//								services1.add(service);
+//								// jetzt sind halt alle services in dieser Liste, auch wenn sie gar nicht angechekt wurden.
+//							}
+//						}
+//					catch(Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
 				
 				// 2: 
-				Map<String, String> servicesCheckboxes = configuration
-						.getAttribute(AnalyzerAttributes.SERVICE_CHECKBOX_VALUES, new HashMap<String, String>()); 
-
-				List<ExecutionServiceProvider> services2 = new LinkedList<>();
-				ServiceLoader<ExecutionServiceProvider> eServices = ServiceLoader.load(ExecutionServiceProvider.class);
-				for (ExecutionServiceProvider service : eServices) {
-					if (servicesCheckboxes.containsKey(service.getName()) 
-						&& Boolean.valueOf(servicesCheckboxes.get(service.getName()))) {
-						services2.add(service);
-					}
-				}
-
-				// ---- execute Services (könnte man auch direkt zum Laden bei 2 dazu packen)
-				for (ExecutionServiceProvider ser : services2) {
-					root.appendChild(ser.printInXML(doc, linesInFile));
-				}
+//				Map<String, String> servicesCheckboxes = configuration
+//						.getAttribute(AnalyzerAttributes.SERVICE_CHECKBOX_VALUES, new HashMap<String, String>()); 
+//
+//				List<ExecutionServiceProvider> services2 = new LinkedList<>();
+//				ServiceLoader<ExecutionServiceProvider> eServices = ServiceLoader.load(ExecutionServiceProvider.class);
+//				for (ExecutionServiceProvider service : eServices) {
+//					if (servicesCheckboxes.containsKey(service.getName()) 
+//						&& Boolean.valueOf(servicesCheckboxes.get(service.getName()))) {
+//						services2.add(service);
+//					}
+//				}
+//
+//				// ---- execute Services (könnte man auch direkt zum Laden bei 2 dazu packen)
+//				for (ExecutionServiceProvider ser : services2) {
+//					root.appendChild(ser.printInXML(doc, linesInFile));
+//				}
 					
 				saveAnalysisFile(outputFileName, doc);
 				

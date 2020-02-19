@@ -6,9 +6,10 @@ import java.util.StringTokenizer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import plugintest4.IAnalysis;
+import provider.AProvider;
 
-public class WordCountAnalysis implements IAnalysis {
+
+public class WordCountAnalysis implements AProvider {
 
 	@Override
 	public String getName() {

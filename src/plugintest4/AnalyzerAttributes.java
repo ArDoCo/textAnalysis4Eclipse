@@ -1,6 +1,9 @@
 package plugintest4;
 
 import java.util.Map;
+
+import provider.AProvider;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
@@ -20,7 +23,7 @@ public class AnalyzerAttributes {
 	public static final String EXECUTION_SERVICE_CLASS_NAMES = "edu.kit.analyzer.EXECUTION_SERVICE_CLASS_NAMES";
 	
 	// TODO is there a more pretty Way to register the Analysis so the Delegate can use them?
-	public static Map<String, IAnalysis> AnalysisRegistry;
+	public static Map<String, AProvider> AnalysisRegistry;
 	
 	protected static URLClassLoader getURLCL() {
 		 File loc = new File("C:\\Maike\\KIT\\PraktikumWfAM\\Analysis");
@@ -39,13 +42,13 @@ public class AnalyzerAttributes {
 			}
 	     
 	     //URL[] classLoaderUrls = new URL[]{new URL("file:///C://Maike//KIT//PraktikumWfAM//Analysis//bean.jar")};
-	    URL[] classLoaderUrls = null;
-		try {
-			classLoaderUrls = new URL[]{new URL("file:///C://Maike//KIT//PraktikumWfAM//Analysis/dcountservice-0.0.1-SNAPSHOT.jar")};
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//	    URL[] classLoaderUrls = null;
+//		try {
+//			classLoaderUrls = new URL[]{new URL("file:///C://Maike//KIT//PraktikumWfAM//Analysis/dcountservice-0.0.1-SNAPSHOT.jar")};
+//		} catch (MalformedURLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	     
 	     System.out.println("url list: " + urls.length);
 	     System.out.println(flist[0]);
