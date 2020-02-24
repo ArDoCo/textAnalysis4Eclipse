@@ -4,28 +4,28 @@
 
    <extension point="org.eclipse.debug.core.launchConfigurationTypes">
    		<launchConfigurationType
-	   		 id="LaunchConfigurationTyp"
-	   		 delegate="plugintest4.AnalyzerDelegate"
-	   		 modes="run"
+	   		 id="textAnalysis.core.LaunchConfigurationTyp"
+	   		 delegate="textAnalysis.core.AnalyzerDelegate"
+	   		 modes="run, debug"
 	         name="TextAnalyzer">
   		</launchConfigurationType>
    </extension>
   
    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
         <launchConfigurationTabGroup
-            type="LaunchConfigurationTyp"
-            class="plugintest4.AnalyzerTabGroup" 
-            id="plugintest4.AnalyzerTabGroup">
+            type="textAnalysis.core.LaunchConfigurationTyp"
+            class="textAnalysis.core.AnalyzerTabGroup" 
+            id="textAnalysis.core.AnalyzerTabGroup">
         </launchConfigurationTabGroup>
 	</extension>
 	
    <extension point="org.eclipse.debug.ui.launchConfigurationTypeImages">
     <launchConfigurationTypeImage
             id="launchconfigurationtypeimage"
-            configTypeID="LaunchConfigurationTyp"
+            configTypeID="textAnalysis.core.LaunchConfigurationTyp"
             icon="icons/analysis.png">
     </launchConfigurationTypeImage>
-</extension>
+	</extension>
 
 
 </plugin>

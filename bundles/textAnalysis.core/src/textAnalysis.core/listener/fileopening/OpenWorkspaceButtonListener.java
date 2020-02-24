@@ -1,4 +1,4 @@
-package plugintest4.listener.fileopening;
+package textAnalysis.core.listener.fileopening;
 
 import java.util.ArrayList;
 import java.util.Arrays;

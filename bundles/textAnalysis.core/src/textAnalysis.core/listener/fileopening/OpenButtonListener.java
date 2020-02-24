@@ -1,4 +1,4 @@
-package plugintest4.listener.fileopening;
+package textAnalysis.core.listener.fileopening;
 
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Shell;

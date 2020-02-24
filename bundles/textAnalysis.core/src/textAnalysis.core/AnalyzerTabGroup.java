@@ -1,4 +1,4 @@
-package plugintest4;
+package textAnalysis.core;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,7 +37,7 @@ public class AnalyzerTabGroup extends AbstractLaunchConfigurationTabGroup {
 	       // URL Class Loader anschauen
 	      
 	      // IAnalysis could also have an option "needs own Tab" 
-	      // und dann könnte man abhängig davon neue Tabs in die Liste geben oder eben nur
+	      // und dann kï¿½nnte man abhï¿½ngig davon neue Tabs in die Liste geben oder eben nur
 	      // die Analysen in ein Default-Analysis-Tab laden. 
 	      
 	      // TODO Error Handling if there Are no analyis

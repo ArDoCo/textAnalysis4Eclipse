@@ -1,4 +1,4 @@
-package plugintest4;
+package textAnalysis.core;
 
 import java.util.Map;
 
@@ -16,8 +16,8 @@ public class AnalyzerAttributes {
 	public static final String FILE_NAME = "edu.kit.analyzer.FILE_TEXT";
 	
 	// Was da reinkommt ist eine Map<String,String>: Name auf 'true'/ 'false'.
-	// TODO man könnte auch nur eine Liste mit allen Namen machen von denen, die ausgeführt werden sollen, 
-	//      wenn eine abgeklickt wird müsste man sie halt immer aus der Liste löschen, das ist wahrscheinlich zu aufwändig.
+	// TODO man kï¿½nnte auch nur eine Liste mit allen Namen machen von denen, die ausgefï¿½hrt werden sollen, 
+	//      wenn eine abgeklickt wird mï¿½sste man sie halt immer aus der Liste lï¿½schen, das ist wahrscheinlich zu aufwï¿½ndig.
 	public static final String CHECKBOX_ACTIVATION = "edu.kit.analyzer.CHECKBOX_ACTIVATION";
 	public static final String SERVICE_CHECKBOX_VALUES = "edu.kit.analyzer.SERVICE_CHECKBOX_VALUES";
 	public static final String EXECUTION_SERVICE_CLASS_NAMES = "edu.kit.analyzer.EXECUTION_SERVICE_CLASS_NAMES";

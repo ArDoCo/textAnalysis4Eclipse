@@ -13,12 +13,12 @@
    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
    <project.build.optimize>true</project.build.optimize>
 
-   <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+   <maven-compiler-plugin.version>3.5.3</maven-compiler-plugin.version>
  </properties>
 
-<modules>
+ <modules>
   <module>bundles</module>
-</modules>
+ </modules>
 
  <repositories>
   <repository>

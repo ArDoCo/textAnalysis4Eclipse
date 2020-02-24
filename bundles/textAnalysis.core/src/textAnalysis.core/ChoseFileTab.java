@@ -1,4 +1,4 @@
-package plugintest4;
+package textAnalysis.core;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ import org.eclipse.swt.widgets.Text;
 
 import plugintest4.listener.fileopening.OpenLocalFileSystemButtonListener;
 import plugintest4.listener.fileopening.OpenWorkspaceButtonListener;
-import providerplugin.MyProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -38,14 +37,14 @@ import org.eclipse.swt.events.SelectionListener;
 
 public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
-	// TODO output definieren können (niedrigere Prio)
+	// TODO output definieren kï¿½nnen (niedrigere Prio)
 	// TODO choose all, choose non button
-	// TODO button um location von analysen auszuwählen. 
+	// TODO button um location von analysen auszuwï¿½hlen. 
 	// TODO vielleicht auch in den eclipse plugins nach analysen schauen 
 	// 		-> service als eclipse plugin seiehe openEmfPackageButtonListener (wenn kein Aufwand)
 	
-	// stanford core nlp und dann sätze aufsplitten, wörter pro satz, warnung bei > 24 
-	// regelwerk von "den sophisten" für das Schreiben von requirements 
+	// stanford core nlp und dann sï¿½tze aufsplitten, wï¿½rter pro satz, warnung bei > 24 
+	// regelwerk von "den sophisten" fï¿½r das Schreiben von requirements 
 	//        -> mal noch in swt2 folien schauen
 	// oder txt mit dictionary einbinden und nach schreibfehlern schauen
 	// fortgeschrittener: language tool 

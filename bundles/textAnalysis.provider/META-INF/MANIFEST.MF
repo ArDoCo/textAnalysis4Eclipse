@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: provider
+Bundle-SymbolicName: testAnalysis.provider
+Bundle-Version: 1.0.0
+Bundle-ClassPath: .
+Require-Bundle: javax.xml,
+ org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-10
+Automatic-Module-Name: testAnalysis.provider

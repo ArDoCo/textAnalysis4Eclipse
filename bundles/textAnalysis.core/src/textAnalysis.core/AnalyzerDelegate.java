@@ -1,7 +1,7 @@
 /**
  * 
  */
-package plugintest4;
+package textAnalysis.core;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,7 +43,7 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 	
 	// TODO hier evtl. erst die analysis-objekte laden, im tab nur static constanten zu namen abrufen.
 	// TODO oder eigene launchconfig schreiben, die analyse-objekte speichern kann.
-	// TODO basic test überlegen / implementieren; es gibt auch SWTBot tests (siehe vogella), ui test als bonus
+	// TODO basic test ï¿½berlegen / implementieren; es gibt auch SWTBot tests (siehe vogella), ui test als bonus
 	
 	// TODO bis 13.1. analyse loading, maven tycho verbessern als prio2
 		
@@ -56,7 +56,7 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 		List<String> filenames = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, new ArrayList<String>());
         ServiceLoader<MyProvider> executionServices = ServiceLoader.load(MyProvider.class);
 		
-        // für jedes file eigene analyse:
+        // fï¿½r jedes file eigene analyse:
 		for (String filename: filenames) {
 			String subString = filename.substring(0, filename.length()-4); // TODO 4 rausziehen
 			String outputFileName = subString + "_analysis.xml";
@@ -111,7 +111,7 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 //					}
 //				}
 //
-//				// ---- execute Services (könnte man auch direkt zum Laden bei 2 dazu packen)
+//				// ---- execute Services (kï¿½nnte man auch direkt zum Laden bei 2 dazu packen)
 //				for (ExecutionServiceProvider ser : services2) {
 //					root.appendChild(ser.printInXML(doc, linesInFile));
 //				}

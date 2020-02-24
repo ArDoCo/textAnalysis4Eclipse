@@ -1,4 +1,4 @@
-package plugintest4;
+package textAnalysis.core;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;

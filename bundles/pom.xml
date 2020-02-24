@@ -14,5 +14,6 @@
 
 	<modules>
 		<module>textAnalysis.core</module>
+		<module>textAnalysis.provider</module>
 	</modules>
 </project>

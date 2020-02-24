@@ -1,4 +1,4 @@
-package plugintest4;
+package textAnalysis.core;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;

@@ -1,4 +1,4 @@
-package plugintest4.listener;
+package textAnalysis.core.listener;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;

@@ -1,4 +1,4 @@
-package plugintest4.analysis;
+package textAnalysis.core.analysis;
 
 import java.util.List;
 

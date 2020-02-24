@@ -5,9 +5,4 @@
 		<artifactId>tycho-pomless</artifactId>
 		<version>1.5.1</version>
 	</extension>
-	<!-- <extension>
-		<groupId>org.palladiosimulator</groupId>
-		<artifactId>tycho-tp-refresh-maven-plugin</artifactId>
-		<version>0.2.2</version>
-	</extension> -->
 </extensions>
