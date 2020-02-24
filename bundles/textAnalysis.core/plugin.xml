@@ -16,6 +16,15 @@
             type="textAnalysis.core.LaunchConfigurationTyp"
             class="textAnalysis.core.AnalyzerTabGroup" 
             id="textAnalysis.core.AnalyzerTabGroup">
+            <launchMode 
+                  mode="debug"
+                  perspective="org.eclipse.debug.ui.DebugPerspective"
+                  description="">
+            </launchMode>
+            <launchMode
+                  mode="run"
+                  description="">
+            </launchMode>
         </launchConfigurationTabGroup>
 	</extension>
 	
