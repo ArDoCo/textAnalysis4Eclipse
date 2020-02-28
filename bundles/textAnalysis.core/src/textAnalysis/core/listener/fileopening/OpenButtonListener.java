@@ -4,12 +4,12 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import plugintest4.listener.FileButtonListener;
+import textAnalysis.core.listener.FileButtonListener;
 
 public abstract class OpenButtonListener extends FileButtonListener {
     /**
      * Instantiates a new local file system button selection adapter.
-     * 
+     *
      * @param field
      *            the field
      * @param fileExtension
@@ -26,7 +26,7 @@ public abstract class OpenButtonListener extends FileButtonListener {
 
     /**
      * Instantiates a new local file system button selection adapter.
-     * 
+     *
      * @param field
      *            the field
      * @param fileExtension
@@ -51,7 +51,7 @@ public abstract class OpenButtonListener extends FileButtonListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
      */
     @Override

@@ -8,3 +8,4 @@ Require-Bundle: javax.xml,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: testAnalysis.provider
+Export-Package: textAnalysis.provider

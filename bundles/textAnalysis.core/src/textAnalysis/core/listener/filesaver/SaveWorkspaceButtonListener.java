@@ -9,11 +9,11 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import plugintest4.listener.FilePatternFilter;
+import textAnalysis.core.listener.FilePatternFilter;
 
 /**
  * Copy of de.uka.ipd.sdq.workflow.launchconfig.tabs.LocalFileSystemButtonSelectionAdapter for import reasons
- * 
+ *
  * @author Jan Keim
  *
  */
@@ -21,7 +21,7 @@ public class SaveWorkspaceButtonListener extends SaveButtonListener {
 
     /**
      * Instantiates a new local file system button selection adapter.
-     * 
+     *
      * @param field
      *            the field
      * @param fileExtension
@@ -38,13 +38,13 @@ public class SaveWorkspaceButtonListener extends SaveButtonListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see edu.kit.ipd.are.emf2owl.ui.listener.FileButtonListener#openFileDialog(org.eclipse.swt.widgets.Text,
      * java.lang.String[])
      */
     @Override
     public String saveFileDialog(Text textField, String[] fileExtension) {
-        List<ViewerFilter> filters = new ArrayList<ViewerFilter>();
+        List<ViewerFilter> filters = new ArrayList<>();
         if (fileExtension != null) {
             FilePatternFilter filter = new FilePatternFilter();
             filter.setPatterns(fileExtension);

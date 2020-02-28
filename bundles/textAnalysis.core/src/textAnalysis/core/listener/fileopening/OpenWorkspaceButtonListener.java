@@ -11,18 +11,18 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import plugintest4.listener.FilePatternFilter;
+import textAnalysis.core.listener.FilePatternFilter;
 
 /**
  * Copy of de.uka.ipd.sdq.workflow.launchconfig.tabs.WorkspaceButtonSelectionListener for import reasons
- * 
+ *
  * @author Jan Keim
  *
  */
 public class OpenWorkspaceButtonListener extends OpenButtonListener {
     /**
      * Instantiates a new workspace button selection listener.
-     * 
+     *
      * @param field
      *            the field
      * @param fileExtension
@@ -38,7 +38,7 @@ public class OpenWorkspaceButtonListener extends OpenButtonListener {
 
     /**
      * Instantiates a new workspace button selection listener.
-     * 
+     *
      * @param field
      *            the field
      * @param fileExtension
@@ -61,8 +61,8 @@ public class OpenWorkspaceButtonListener extends OpenButtonListener {
     public String openFileDialog(Text textField, String[] fileExtension) {
         List<ViewerFilter> filters = getFiltersFromExtensions(fileExtension);
 
-        IFile[] files = WorkspaceResourceDialog.openFileSelection(this.getShell(), null, this.getDialogTitle(), false,
-                null, filters);
+        IFile[] files = WorkspaceResourceDialog.openFileSelection(getShell(), null, getDialogTitle(), false, null,
+                filters);
 
         if (files.length != 0 && files[0] != null) {
             return createPlatformFileString(files[0]);
@@ -72,7 +72,7 @@ public class OpenWorkspaceButtonListener extends OpenButtonListener {
     }
 
     private List<ViewerFilter> getFiltersFromExtensions(String[] fileExtension) {
-        List<ViewerFilter> filters = new ArrayList<ViewerFilter>();
+        List<ViewerFilter> filters = new ArrayList<>();
         if (fileExtension != null) {
             FilePatternFilter filter = new FilePatternFilter();
             filter.setPatterns(fileExtension);
@@ -85,8 +85,8 @@ public class OpenWorkspaceButtonListener extends OpenButtonListener {
     public String openFileDialog(Text textField, String[] fileExtension, boolean multipleSelection) {
         List<ViewerFilter> filters = getFiltersFromExtensions(fileExtension);
 
-        IFile[] files = WorkspaceResourceDialog.openFileSelection(this.getShell(), null, this.getDialogTitle(),
-                multipleSelection, null, filters);
+        IFile[] files = WorkspaceResourceDialog.openFileSelection(getShell(), null, getDialogTitle(), multipleSelection,
+                null, filters);
 
         if (files.length != 0 && files[0] != null) {
             if (multipleSelection) {

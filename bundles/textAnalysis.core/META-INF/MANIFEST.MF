@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.debug.ui,
  org.eclipse.ui.ide,
  org.eclipse.emf.common.ui,
- org.eclipse.emf.ecore
+ org.eclipse.emf.ecore,
+ testAnalysis.provider
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: textAnalysis.core
-Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy

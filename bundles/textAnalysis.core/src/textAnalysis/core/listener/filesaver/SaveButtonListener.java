@@ -4,7 +4,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import plugintest4.listener.FileButtonListener;
+import textAnalysis.core.listener.FileButtonListener;
 
 public abstract class SaveButtonListener extends FileButtonListener {
 
@@ -16,7 +16,7 @@ public abstract class SaveButtonListener extends FileButtonListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
      */
     @Override
@@ -28,11 +28,11 @@ public abstract class SaveButtonListener extends FileButtonListener {
     }
 
     protected Text getField() {
-        return this.field;
+        return field;
     }
 
     protected String[] getExtensions() {
-        return this.extensions;
+        return extensions;
     }
 
 }
