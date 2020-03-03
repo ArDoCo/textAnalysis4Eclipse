@@ -1,6 +1,7 @@
 package textAnalysis.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -134,19 +135,25 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         // }
 
         // ----------- Load Analysis from Service Providers
-        ClassLoader classloader = AnalyzerAttributes.getURLCL();
-        System.out.println("in Chose file Tab: load analysis now");
-        ServiceLoader<textAnalysis.provider.AProvider> nameServices = 
-        		ServiceLoader.load(textAnalysis.provider.AProvider.class, classloader);
-        // ServiceLoader<ExecutionServiceProvider> executionnameServices =
-        // ServiceLoader.load(ExecutionServiceProvider.class, classloader);
-        //
-        System.out.println("classpath=" + System.getProperty("java.class.path"));
-//
-        for (textAnalysis.provider.AProvider service : nameServices) {
-            System.out.println("Im a service");
-        }
-//
+        ClassLoader classloader;
+		try {
+			classloader = AnalyzerAttributes.getURLCL();
+		
+	        System.out.println("in Chose file Tab: load analysis now");
+	        ServiceLoader<textAnalysis.provider.AProvider> nameServices = 
+	        		ServiceLoader.load(textAnalysis.provider. AProvider.class, classloader);
+	        // ServiceLoader<ExecutionServiceProvider> executionnameServices =
+	        // ServiceLoader.load(ExecutionServiceProvider.class, classloader);
+	        //
+	        System.out.println("classpath=" + System.getProperty("java.class.path"));
+	//
+	        for (textAnalysis.provider.AProvider service : nameServices) {
+	            System.out.println("Im a service");
+	        }
+		} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+		}
 //        for (AProvider service : nameServices) {
 //            System.out.println("in service loop");
 //            Button b1 = new Button(container, SWT.CHECK);

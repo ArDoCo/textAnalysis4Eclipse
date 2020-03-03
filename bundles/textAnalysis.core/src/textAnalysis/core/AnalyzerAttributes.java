@@ -1,7 +1,11 @@
 package textAnalysis.core;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -25,9 +29,31 @@ public class AnalyzerAttributes {
     // TODO is there a more pretty Way to register the Analysis so the Delegate can use them?
     public static Map<String, AProvider> AnalysisRegistry;
 
-    protected static URLClassLoader getURLCL() {
-        File loc = new File("C:\\Maike\\KIT\\PraktikumWfAM\\Analysis"); // TODO FIXME
+    protected static URLClassLoader getURLCL() throws IOException {
+    	
+    	
+    	String homeDir = System.getProperty("user.home");
+    	File tmpDir = new File(homeDir + "\\.textanalysisconfig");
+    	if (!tmpDir.exists()){
+			String fileData = homeDir + "\\.textanalysis\\";
+			FileOutputStream fos = new FileOutputStream(tmpDir);
+			fos.write(fileData.getBytes());
+			fos.flush();
+			fos.close();
+			File analysisDir = new File(fileData);
+			if (!analysisDir.exists()) {
+				analysisDir.mkdir();
+			}
+			System.out.println("successfull");
+		}
+    	    	
+    	// TODO catch and print if this folder is not available
+    	BufferedReader br = new BufferedReader(new FileReader(tmpDir)); 
+    	String configFolder = br.readLine();
+    	br.close();
 
+    	File loc = new File(configFolder);
+    	   
         File[] flist = loc.listFiles((FileFilter) file -> file.getPath()
                                                               .toLowerCase()
                                                               .endsWith(".jar"));
