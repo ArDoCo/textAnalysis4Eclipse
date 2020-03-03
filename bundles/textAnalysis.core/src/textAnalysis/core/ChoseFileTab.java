@@ -24,6 +24,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -118,7 +119,8 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         textTxtIn.addModifyListener(modifyListener);
 
         // TODO FIXME
-        SelectionListener localFileSystemListener = new OpenLocalFileSystemButtonListener(textTxtIn, txtFileExtensions,
+        SelectionListener localFileSystemListener = 
+        		new OpenLocalFileSystemButtonListener(textTxtIn, txtFileExtensions,
                 TEXT_LOAD_TXT_FILE, shell, true);
 
         final Button localFileSystemButton = new Button(container, SWT.NONE);
@@ -137,19 +139,29 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         // ----------- Load Analysis from Service Providers
         ClassLoader classloader;
 		try {
-			classloader = AnalyzerAttributes.getURLCL();
+			String folder = AnalyzerAttributes.getAnalysisSrcFolder();
+
+			if (folder.equals("")) {
+				Label noFolderText = new Label(container, SWT.LEFT);
+				noFolderText.setText("No Folder is specified in <user.dir>/.textanalysisconfig "
+						+ "for Analysis jars.");
+				noFolderText.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+			
+			} else {
+							
+				// TODO count analysis and print if 0
+				classloader = AnalyzerAttributes.getURLCL(folder);
+			
+		        System.out.println("in Chose file Tab: load analysis now");
+		        ServiceLoader<textAnalysis.provider.AProvider> nameServices = 
+		        		ServiceLoader.load(textAnalysis.provider. AProvider.class, classloader);
+		        
+		        System.out.println("classpath=" + System.getProperty("java.class.path"));
 		
-	        System.out.println("in Chose file Tab: load analysis now");
-	        ServiceLoader<textAnalysis.provider.AProvider> nameServices = 
-	        		ServiceLoader.load(textAnalysis.provider. AProvider.class, classloader);
-	        // ServiceLoader<ExecutionServiceProvider> executionnameServices =
-	        // ServiceLoader.load(ExecutionServiceProvider.class, classloader);
-	        //
-	        System.out.println("classpath=" + System.getProperty("java.class.path"));
-	//
-	        for (textAnalysis.provider.AProvider service : nameServices) {
-	            System.out.println("Im a service");
-	        }
+		        for (textAnalysis.provider.AProvider service : nameServices) {
+		            System.out.println("Im a service");
+		        }
+			}
 		} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();

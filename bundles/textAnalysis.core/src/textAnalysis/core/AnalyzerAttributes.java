@@ -29,8 +29,18 @@ public class AnalyzerAttributes {
     // TODO is there a more pretty Way to register the Analysis so the Delegate can use them?
     public static Map<String, AProvider> AnalysisRegistry;
 
-    protected static URLClassLoader getURLCL() throws IOException {
-    	
+    /**
+     * Reads the config file and returns the name of the Folder where the Analysis-Jars are.
+     * The config file is a file called .textanalysisconfig in the users home directory.
+     * It has to contain the specific path to the folder.
+     * 
+     * If the config file can not be found, it is created with an entry to a default 
+     * folder which is the folder '.textanalysis' in the user's home directory.
+     * 
+     * @return The folder name or "" if no folder is specified / the specified folder can not be found.
+     * @throws IOException
+     */
+    protected static String getAnalysisSrcFolder() throws IOException {
     	
     	String homeDir = System.getProperty("user.home");
     	File tmpDir = new File(homeDir + "\\.textanalysisconfig");
@@ -47,11 +57,27 @@ public class AnalyzerAttributes {
 			System.out.println("successfull");
 		}
     	    	
-    	// TODO catch and print if this folder is not available
     	BufferedReader br = new BufferedReader(new FileReader(tmpDir)); 
     	String configFolder = br.readLine();
     	br.close();
-
+    	
+    	if (configFolder == null) {
+    		return "";
+    	}
+    	if (new File(configFolder).exists()) {   
+    		return configFolder;
+    	} else {
+    		return "";
+    	}
+    }
+    
+    
+    /***
+     * Creates a ClassLoader that loads the jar-files from the specified configFolder
+     * @param configFolder
+     * @return The created ClassLoader
+     */
+    protected static URLClassLoader getURLCL(String configFolder) {
     	File loc = new File(configFolder);
     	   
         File[] flist = loc.listFiles((FileFilter) file -> file.getPath()
