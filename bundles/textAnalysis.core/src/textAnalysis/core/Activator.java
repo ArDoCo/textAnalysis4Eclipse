@@ -8,6 +8,7 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 // public class Activator extends AbstractUIPlugin {
+// muss die abstract class implementieren damit man super callen kann. 
 public class Activator implements BundleActivator {
 
     // The plug-in ID

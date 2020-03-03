@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: provider
-Bundle-SymbolicName: testAnalysis.provider;singleton:=true
+Bundle-Name: textAnalysis.provider
+Bundle-SymbolicName: textAnalysis.provider;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-ClassPath: .
 Require-Bundle: javax.xml,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Automatic-Module-Name: testAnalysis.provider
+Automatic-Module-Name: textAnalysis.provider
 Export-Package: textAnalysis.provider
