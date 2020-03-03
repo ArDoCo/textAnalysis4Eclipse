@@ -38,11 +38,8 @@ import textAnalysis.provider.AProvider;
  */
 public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 
-    // TODO hier evtl. erst die analysis-objekte laden, im tab nur static constanten zu namen abrufen.
-    // TODO oder eigene launchconfig schreiben, die analyse-objekte speichern kann.
     // TODO basic test �berlegen / implementieren; es gibt auch SWTBot tests (siehe vogella), ui test als bonus
 
-    // TODO bis 13.1. analyse loading, maven tycho verbessern als prio2
 
     @Override
     public void launch(ILaunchConfiguration configuration, String arg1, ILaunch arg2, IProgressMonitor arg3)
@@ -53,9 +50,12 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
         List<String> filenames = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, new ArrayList<String>());
         ServiceLoader<AProvider> executionServices = ServiceLoader.load(AProvider.class);
 
-        // f�r jedes file eigene analyse:
+        // do one analysis for each input file
         for (String filename : filenames) {
-            String subString = filename.substring(0, filename.length() - 4); // TODO 4 rausziehen
+        	
+        	int i = filename.lastIndexOf('.');
+        	int extensionlength = (i > 0) ? filename.substring(i).length() : 0;
+            String subString = filename.substring(0, filename.length() - extensionlength); 
             String outputFileName = subString + "_analysis.xml";
 
             try {

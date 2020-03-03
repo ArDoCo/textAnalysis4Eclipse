@@ -9,11 +9,16 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import textAnalysis.provider.AProvider;
 
 public class AnalyzerAttributes {
+	
+	private static final boolean cheatVersion = true;
 
     // Names of the Attributes
     public static final String FILE_NAME = "edu.kit.analyzer.FILE_TEXT";
@@ -113,6 +118,25 @@ public class AnalyzerAttributes {
         return ucl;
     }
 
+    
+    protected static List<AProvider> loadServices(String folder) {
+    	ServiceLoader<AProvider> nameServices;
+    	
+    	if (cheatVersion) {	
+    		nameServices = ServiceLoader.load(AProvider.class);
+    	} else { // TODO FIXME, throws ClassNotFoundDef
+            ClassLoader classloader = AnalyzerAttributes.getURLCL(folder);
+	        nameServices = ServiceLoader.load(textAnalysis.provider.AProvider.class, classloader);
+    	}
+    	
+    	List<AProvider> providerList = new LinkedList<>();
+        for (AProvider service : nameServices) {
+        	providerList.add(service);
+        }
+        return providerList;
+    }
+    
+    
     private AnalyzerAttributes() {
     }
 

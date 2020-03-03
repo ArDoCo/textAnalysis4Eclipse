@@ -5,7 +5,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 
 public class AnalyzerTabGroup extends AbstractLaunchConfigurationTabGroup {
-
+	
     // TODO fancy analysen mit eigenem tab am ende.
 
     @Override

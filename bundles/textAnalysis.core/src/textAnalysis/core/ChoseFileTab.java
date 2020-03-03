@@ -36,10 +36,6 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
     // TODO output definieren k�nnen (niedrigere Prio)
     // TODO choose all, choose non button
-    // TODO button um location von analysen auszuw�hlen.
-    // TODO vielleicht auch in den eclipse plugins nach analysen schauen
-    // -> service als eclipse plugin seiehe openEmfPackageButtonListener (wenn kein Aufwand)
-
     // stanford core nlp und dann s�tze aufsplitten, w�rter pro satz, warnung bei > 24
     // regelwerk von "den sophisten" f�r das Schreiben von requirements
     // -> mal noch in swt2 folien schauen
@@ -60,7 +56,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
     private List<AProvider> analysis;
 
     private Map<String, Button> serviceButtons;
-    // private List<NameServiceProvider> services;
+    private List<AProvider> services;
     private List<String> executionServiceClassNames;
 
     // public ChoseFileTab(List<IAnalysis> analysis) {
@@ -77,7 +73,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         analysisButtons = new HashMap<>();
 
         serviceButtons = new HashMap<>();
-        // this.services = new LinkedList<>();
+        services = new LinkedList<>();
         executionServiceClassNames = new LinkedList<>();
     }
 
@@ -137,46 +133,42 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         // }
 
         // ----------- Load Analysis from Service Providers
-        ClassLoader classloader;
+       
+		String folder;
 		try {
-			String folder = AnalyzerAttributes.getAnalysisSrcFolder();
-
-			if (folder.equals("")) {
-				Label noFolderText = new Label(container, SWT.LEFT);
-				noFolderText.setText("No Folder is specified in <user.dir>/.textanalysisconfig "
-						+ "for Analysis jars.");
-				noFolderText.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-			
-			} else {
-							
-				// TODO count analysis and print if 0
-				classloader = AnalyzerAttributes.getURLCL(folder);
-			
-		        System.out.println("in Chose file Tab: load analysis now");
-		        ServiceLoader<textAnalysis.provider.AProvider> nameServices = 
-		        		ServiceLoader.load(textAnalysis.provider. AProvider.class, classloader);
-		        
-		        System.out.println("classpath=" + System.getProperty("java.class.path"));
+			folder = AnalyzerAttributes.getAnalysisSrcFolder();
 		
-		        for (textAnalysis.provider.AProvider service : nameServices) {
-		            System.out.println("Im a service");
-		        }
+			if (folder.equals("")) {
+				addRedLabel("No Folder is specified in <user.dir>/.textanalysisconfig for Analysis jars.", 
+						container);
+			} else {
+				List<AProvider> serviceProviders = AnalyzerAttributes.loadServices(folder);
+				// TODO count analysis and print if 0
+			    if (serviceProviders.size() == 0) {
+			    	addRedLabel("No Analysis found.", container);
+			    } else {
+		    		for (AProvider service : serviceProviders) {
+		    			Button b1 = new Button(container, SWT.CHECK);
+						b1.setText(service.getName());
+						b1.addSelectionListener(checkboxSelectionListener);
+						this.serviceButtons.put(service.getName(), b1);
+						this.services.add(service);
+						this.executionServiceClassNames.add(service.getName());
+		    		}
+			    }
 			}
 		} catch (IOException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
+			addRedLabel("IOException in Folder Loading. Ask a smart Developer for help!", container);
+			e1.printStackTrace();
 		}
-//        for (AProvider service : nameServices) {
-//            System.out.println("in service loop");
-//            Button b1 = new Button(container, SWT.CHECK);
-//            b1.setText(service.getName());
-//            b1.addSelectionListener(checkboxSelectionListener);
-//            serviceButtons.put(service.getName(), b1);
-//            analysis.add(service);
-//            executionServiceClassNames.add(service.getName());
-//        }
     }
 
+    private void addRedLabel(String message, Composite container){
+    	Label noFolderText = new Label(container, SWT.LEFT);
+		noFolderText.setText(message);
+		noFolderText.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+    }
+    
     @Override
     public String getName() {
         return "Data";
