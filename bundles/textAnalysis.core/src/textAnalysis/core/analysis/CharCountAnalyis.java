@@ -7,9 +7,9 @@ import org.w3c.dom.Element;
 
 import textAnalysis.provider.AProvider;
 
-public class CharCountAnalyis implements AProvider {
+public class CharCountAnalyis {
 
-    @Override
+//    @Override
     public String getName() {
         return "Char-Count";
     }
@@ -39,7 +39,7 @@ public class CharCountAnalyis implements AProvider {
         return charCount;
     }
 
-    @Override
+//    @Override
     public boolean isValid() {
         return true;
     }

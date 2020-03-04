@@ -8,9 +8,9 @@ import org.w3c.dom.Element;
 
 import textAnalysis.provider.AProvider;
 
-public class WordCountAnalysis implements AProvider {
+public class WordCountAnalysis {
 
-    @Override
+//    @Override
     public String getName() {
         return "Word-Count";
     }
@@ -34,7 +34,7 @@ public class WordCountAnalysis implements AProvider {
         return wordCount;
     }
 
-    @Override
+//    @Override
     public boolean isValid() {
         return true;
     }
