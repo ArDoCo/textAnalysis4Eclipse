@@ -11,7 +11,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
 
 import textAnalysis.provider.AProvider;
@@ -23,11 +22,7 @@ public class AnalyzerAttributes {
     // Names of the Attributes
     public static final String FILE_NAME = "textAnalysis.core.FILE_TEXT";
     public static final String CHECKBOX_ACTIVATION = "textAnalysis.CHECKBOX_ACTIVATION";
- //   public static final String SERVICE_CHECKBOX_VALUES = "textAnalysis.core.SERVICE_CHECKBOX_VALUES";
- //   public static final String EXECUTION_SERVICE_CLASS_NAMES = "textAnalysis.core.EXECUTION_SERVICE_CLASS_NAMES";
 
-    // TODO is there a more pretty Way to register the Analysis so the Delegate can use them?
-    //public static Map<String, AProvider> AnalysisRegistry;
 
     /**
      * Reads the config file and returns the name of the Folder where the Analysis-Jars are.
@@ -95,21 +90,8 @@ public class AnalyzerAttributes {
             }
         }
 
-        // URL[] classLoaderUrls = new URL[]{new URL("file:///C://Maike//KIT//PraktikumWfAM//Analysis//bean.jar")};
-        // URL[] classLoaderUrls = null;
-        // try {
-        // classLoaderUrls = new URL[]{new
-        // URL("file:///C://Maike//KIT//PraktikumWfAM//Analysis/dcountservice-0.0.1-SNAPSHOT.jar")};
-        // } catch (MalformedURLException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-
-        System.out.println("url list: " + urls.length);
-        System.out.println(flist[0]);
-        System.out.println(urls[0]);
+        System.out.println("found # urls: " + urls.length);
         URLClassLoader ucl = new URLClassLoader(urls);
-
         return ucl;
     }
 
@@ -119,13 +101,13 @@ public class AnalyzerAttributes {
     	
     	if (cheatVersion) {	
     		nameServices = ServiceLoader.load(AProvider.class);
-    	} else { // TODO FIXME, throws ClassNotFoundDef
+    	} else { 
             ClassLoader classloader = AnalyzerAttributes.getURLCL(folder);
 	        nameServices = ServiceLoader.load(textAnalysis.provider.AProvider.class, classloader);
     	}
     	
     	List<AProvider> providerList = new LinkedList<>();
-        for (AProvider service : nameServices) {
+        for (AProvider service : nameServices) { // TODO FIXME, throws ClassNotFoundDef
         	providerList.add(service);
         }
         return providerList;

@@ -4,7 +4,6 @@
 package textAnalysis.core;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -14,12 +13,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
@@ -27,19 +21,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import textAnalysis.provider.AProvider;
 
@@ -133,77 +120,6 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-            
-//            try {
-
-                // ---- Preprocessing
-//                Document doc = setupDocument();
-//                Element root = setupRootInDoc(filename, doc);
-//
-            	
-            	// ---- setup Document
-  
-                
-                	
-                // ---- Analysis
-//                Map<String, String> checkbox_activation = configuration.getAttribute(
-//                        AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
-//
-//                for (Map.Entry<String, String> entry : checkbox_activation.entrySet()) {
-//                    if (Boolean.valueOf(entry.getValue())) {
-//                        // root.appendChild(AnalyzerAttributes.AnalysisRegistry.get(entry.getKey())
-//                        // .printInXML(doc, linesInFile));
-//                        // TODO FIXME!
-//                        System.out.println("FIXME!!");
-//                    }
-//                }
-
-                // ---- Services // two options to load:
-                // 1: (hat ein Problem! TODO)
-//                List<AProvider> services1 = new LinkedList<>();
-//                 List<String> serviceClassNames = configuration TODO
-                // .getAttribute(AnalyzerAttributes.EXECUTION_SERVICE_CLASS_NAMES, new LinkedList<String>());
-                // for (String s : serviceClassNames) {
-                // try {
-                // Object o = Class.forName(s).newInstance(); // braucht das noch ein .class ?
-                // if (o instanceof ExecutionServiceProvider) {
-                // ExecutionServiceProvider service = (ExecutionServiceProvider) o;
-                // services1.add(service);
-                // // jetzt sind halt alle services in dieser Liste, auch wenn sie gar nicht angechekt wurden.
-                // }
-                // }
-                // catch(Exception e) {
-                // e.printStackTrace();
-                // }
-                // }
-
-                // 2:
-//                 Map<String, String> servicesCheckboxes = 
-//                		 configuration.getAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, 
-//                				 new HashMap<String, String>());
-                //
-                // List<ExecutionServiceProvider> services2 = new LinkedList<>();
-                // ServiceLoader<ExecutionServiceProvider> eServices =
-                // ServiceLoader.load(ExecutionServiceProvider.class);
-                // for (ExecutionServiceProvider service : eServices) {
-                // if (servicesCheckboxes.containsKey(service.getName())
-                // && Boolean.valueOf(servicesCheckboxes.get(service.getName()))) {
-                // services2.add(service);
-                // }
-                // }
-                //
-                // // ---- execute Services (k�nnte man auch direkt zum Laden bei 2 dazu packen)
-                // for (ExecutionServiceProvider ser : services2) {
-                // root.appendChild(ser.printInXML(doc, linesInFile));
-                // }
-
-//                saveAnalysisFile(outputFileName, doc);
-
-//            } catch (ParserConfigurationException e) {
-//                e.printStackTrace();
-//            } catch (TransformerException tfe) {
-//                tfe.printStackTrace();
-//            }
         }
     }
 
@@ -217,34 +133,6 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
     	return null;
     }
     
-    private void saveAnalysisFile(String outputFileName, Document doc) throws TransformerException {
-
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource dmSource = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File(outputFileName));
-        transformer.transform(dmSource, result);
-    }
-
-    private Document setupDocument() throws ParserConfigurationException {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-        Document doc = docBuilder.newDocument();
-        return doc;
-    }
-
-    private Element setupRootInDoc(String inputFileName, Document doc) {
-
-        Element rootElement = doc.createElement("Analysis");
-        doc.appendChild(rootElement);
-
-        Element source = doc.createElement("Source");
-        source.setAttribute("file", inputFileName);
-        rootElement.appendChild(source);
-
-        return rootElement;
-    }
 
     private List<String> getLinesInFile(String filename) {
         List<String> linesInFile = new ArrayList<>();
