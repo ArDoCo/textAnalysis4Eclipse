@@ -31,6 +31,7 @@ public class AComplexAnalysis implements AProvider {
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		XMLEvent end = eventFactory.createDTD("\n");
 		XMLEvent tab = eventFactory.createDTD("\t");
+		events.add(end);
 
 		// create Start node
 		StartElement sElement = eventFactory.createStartElement("", "", "analysis");

@@ -18,6 +18,7 @@ import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartDocument;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -97,18 +98,22 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 	            eventWriter.add(startDocument);
 	
 	            // create analysis open tag
+	            eventWriter.add(end);
 	            StartElement configStartElement = eventFactory.createStartElement("", "", "textAnalysis");
 	            eventWriter.add(configStartElement);
 	            eventWriter.add(end);
 	            
 	            // Here: Add Analysis nodes
 	            for (AProvider aP : analysisToCompute ) {
+            		StartElement analysisStartEl = eventFactory.createStartElement("", "", aP.getName());
+            		eventWriter.add(analysisStartEl);
 	            	List<XMLEvent> events = aP.getXMLEvents(textToAnalyze);
-	            	for (XMLEvent e : events) { 
-	            		// TODO (2) Whos responsibility is it, to check that the events are properly 
-	            		// opened and closed? and formed?            	
+	            	for (XMLEvent e : events) {  
 	            		eventWriter.add(e);
 	            	}
+	            	EndElement analysisEndEl = eventFactory.createEndElement("", "", aP.getName());
+	            	eventWriter.add(analysisEndEl);
+	            	eventWriter.add(end);
 	            }
 	            
 	            // close XML

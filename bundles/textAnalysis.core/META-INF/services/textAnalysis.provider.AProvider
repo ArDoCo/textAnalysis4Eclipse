@@ -1,2 +1,4 @@
 textAnalysis.core.subst.AComplexAnalysis
 textAnalysis.core.subst.ASimpleAnalysis
+textAnalysis.core.subst.CharCountAnalyis
+textAnalysis.core.subst.WordCountAnalysis
