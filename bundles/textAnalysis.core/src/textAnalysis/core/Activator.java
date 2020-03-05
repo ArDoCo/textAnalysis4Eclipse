@@ -1,15 +1,12 @@
 package textAnalysis.core;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-// public class Activator extends AbstractUIPlugin {
-// muss die abstract class implementieren damit man super callen kann. 
-public class Activator implements BundleActivator {
+public class Activator extends AbstractUIPlugin {
 
     // The plug-in ID
     public static final String PLUGIN_ID = "PluginTest4"; //$NON-NLS-1$
@@ -25,10 +22,10 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        // super.start(context);
-        Bundle[] bundles = context.getBundles(); // TODO hier vielleicht schauen welche plugins installiert sind
-        System.out.print("In Activator start: Bundles from Context length: ");
-        System.out.println(bundles.length);
+    	super.start(context);
+      //  Bundle[] bundles = context.getBundles(); 
+      //  System.out.print("In Activator start: Bundles from Context length: ");
+      //  System.out.println(bundles.length);
         plugin = this;
     }
 

@@ -98,7 +98,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         textTxtIn.setLayoutData(gd1);
         textTxtIn.addModifyListener(modifyListener);
 
-        // TODO FIXME ?
+        // FIXME ?
         SelectionListener localFileSystemListener = 
         		new OpenLocalFileSystemButtonListener(textTxtIn, txtFileExtensions,
                 TEXT_LOAD_TXT_FILE, shell, true);
@@ -230,13 +230,6 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 	         }
          }
 
-        boolean servicesAreValid = true;
-        // for (NameServiceProvider s : services) { TODO
-        // if (!s.isValid()) {
-        // servicesAreValid = false;
-        // }
-        // }
-
         // if at least one Analysis is chosen
         boolean atLeast1 = false;
         for (Button b : analysisButtons.values()) {
@@ -245,24 +238,17 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
             }
         }
 
-//        boolean atLeast1s = false;
-//        for (Button bs : serviceButtons.values()) {
-//            if (bs.getSelection()) {
-//                atLeast1s = true;
-//            }
-//        }
-
-        return ((files.length > 0) && filesAreValid && analysisAreValid && atLeast1 && servicesAreValid);
+        return ((files.length > 0) && filesAreValid && analysisAreValid && atLeast1);
     }
 
     @Override
-    protected boolean isDirty() { // TODO
+    protected boolean isDirty() { // TODO implement method
         System.out.println("is dirty");
         return true;
     }
 
     @Override
-    public boolean canSave() { // TODO
+    public boolean canSave() { // TODO implement method
         System.out.println("can save");
         return true;
     }
