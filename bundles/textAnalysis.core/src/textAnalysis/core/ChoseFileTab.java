@@ -56,6 +56,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 
     public ChoseFileTab() {
+        super();
         analysisList = new LinkedList<>();
         analysisButtons = new HashMap<>();
     }
@@ -108,9 +109,9 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
        
         // ----------- Load Analysis from Service Providers
-		String folder;
+		// folder;
 		try {
-			folder = AnalyzerAttributes.getAnalysisSrcFolder();
+			String folder = AnalyzerAttributes.getAnalysisSrcFolder();
 		
 			if (folder.equals("")) {
 				addRedLabel("No Folder is specified in <user.dir>/.textanalysisconfig for Analysis jars.", 
@@ -154,7 +155,6 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
     @Override
     public void initializeFrom(ILaunchConfiguration configuration) {
-
         try {
 
             // ---- Files
@@ -166,10 +166,12 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
             Map<String, String> service_checkbox_values = configuration.getAttribute(
                     AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
             for (Map.Entry<String, String> service_entry : service_checkbox_values.entrySet()) {
-                analysisButtons.get(service_entry.getKey())
-                              .setSelection(Boolean.valueOf(service_entry.getValue()));
-                // TODO (1) abfangen wenn jetzt nicht die gleichen Analysen geladen werden als beim letzten mal
-                // bzw geladene mit gecheckten abgleichen. Alte wegschmeiﬂen. Oder error schmeiﬂen?
+            	// This checks that if an analysis that was previous loaded but now is not there anymore, 
+            	// there is no error. Only currently available Analyzes get a checkbox.
+            	if (AnalyzerAttributes.getMatchingProvider(analysisList, service_entry.getKey()) != null) {
+            		analysisButtons.get(service_entry.getKey())
+                    .setSelection(Boolean.valueOf(service_entry.getValue()));
+            	}
             }
 
         } catch (CoreException e) {
@@ -195,18 +197,6 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
             		Boolean.valueOf(entry.getValue().getSelection()).toString());
         }
         configuration.setAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, checkbox_activation);
-
-        // ---- Services
-//        Map<String, String> service_activation = new HashMap<>();
-//
-//        for (Map.Entry<String, Button> sEntry : serviceButtons.entrySet()) {
-//            service_activation.put(sEntry.getKey(), Boolean.valueOf(sEntry.getValue()
-//                                                                          .getSelection())
-//                                                           .toString());
-//        }
-//        configuration.setAttribute(AnalyzerAttributes.SERVICE_CHECKBOX_VALUES, service_activation);
-//
-//        configuration.setAttribute(AnalyzerAttributes.EXECUTION_SERVICE_CLASS_NAMES, executionServiceClassNames);
 
     }
 

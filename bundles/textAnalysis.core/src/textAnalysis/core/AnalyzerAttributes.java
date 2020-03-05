@@ -107,12 +107,21 @@ public class AnalyzerAttributes {
     	}
     	
     	List<AProvider> providerList = new LinkedList<>();
-        for (AProvider service : nameServices) { // TODO FIXME, throws ClassNotFoundDef
+        for (AProvider service : nameServices) { // FIXME, throws ClassNotFoundDef
         	providerList.add(service);
         }
         return providerList;
     }
     
+    protected static AProvider getMatchingProvider(List<AProvider> list, String name) {
+    	
+    	for (AProvider s : list) {
+    		if (s.getName().equals(name)) {
+    			return s;
+    		}
+    	}
+    	return null;
+    }
     
     private AnalyzerAttributes() {
     }

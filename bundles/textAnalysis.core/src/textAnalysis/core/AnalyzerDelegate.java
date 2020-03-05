@@ -66,7 +66,7 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 
         for (Map.Entry<String,String> entry : analysisCheckboxes.entrySet()) {
         	if (Boolean.valueOf(entry.getValue())) {
-        		AProvider s = getMatchingProvider(analysisProviders, entry.getKey());
+        		AProvider s = AnalyzerAttributes.getMatchingProvider(analysisProviders, entry.getKey());
         		if (s != null) {
         			analysisToCompute.add(s);
         		}
@@ -126,16 +126,6 @@ public class AnalyzerDelegate extends LaunchConfigurationDelegate {
 				e1.printStackTrace();
 			}
         }
-    }
-
-    private AProvider getMatchingProvider(List<AProvider> list, String name) {
-    	
-    	for (AProvider s : list) {
-    		if (s.getName().equals(name)) {
-    			return s;
-    		}
-    	}
-    	return null;
     }
     
 
