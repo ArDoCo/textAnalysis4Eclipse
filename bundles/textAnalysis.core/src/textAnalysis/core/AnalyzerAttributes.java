@@ -17,7 +17,7 @@ import textAnalysis.provider.AProvider;
 
 public class AnalyzerAttributes {
 	
-	private static final boolean cheatVersion = true;
+	private static final boolean cheatVersion = false;
 
     // Names of the Attributes
     public static final String FILE_NAME = "textAnalysis.core.FILE_TEXT";
@@ -73,41 +73,44 @@ public class AnalyzerAttributes {
      * @return The created ClassLoader
      */
     protected static URLClassLoader getURLCL(String configFolder) {
+    	
     	File loc = new File(configFolder);
-    	   
-        File[] flist = loc.listFiles((FileFilter) file -> file.getPath()
-                                                              .toLowerCase()
-                                                              .endsWith(".jar"));
+        File[] flist = loc.listFiles((FileFilter) file -> file.getPath().toLowerCase().endsWith(".jar"));
         System.out.println("file list: " + flist.length);
 
         URL[] urls = new URL[flist.length];
         for (int i = 0; i < flist.length; i++) {
             try {
-                urls[i] = flist[i].toURI()
-                                  .toURL();
+                urls[i] = flist[i].toURI().toURL();
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }
 
         System.out.println("found # urls: " + urls.length);
+        
         URLClassLoader ucl = new URLClassLoader(urls);
-        return ucl;
+        
+        return ucl;	
+        
+        
     }
+    
+    
 
     
     protected static List<AProvider> loadServices(String folder) {
-    	ServiceLoader<AProvider> nameServices;
+    	ServiceLoader<AProvider> analysisServices;
     	
     	if (cheatVersion) {	
-    		nameServices = ServiceLoader.load(AProvider.class);
+    		analysisServices = ServiceLoader.load(AProvider.class);
     	} else { 
             ClassLoader classloader = AnalyzerAttributes.getURLCL(folder);
-	        nameServices = ServiceLoader.load(textAnalysis.provider.AProvider.class, classloader);
+	        analysisServices = ServiceLoader.load(textAnalysis.provider.AProvider.class, classloader);
     	}
     	
     	List<AProvider> providerList = new LinkedList<>();
-        for (AProvider service : nameServices) { // FIXME, throws ClassNotFoundDef
+        for (AProvider service : analysisServices) { // FIXME, throws ClassNotFoundDef
         	providerList.add(service);
         }
         return providerList;

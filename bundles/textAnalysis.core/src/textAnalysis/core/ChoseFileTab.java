@@ -44,6 +44,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
 
     private Label helloText;
+    private Label analysisText;
     private static final String TEXT_LOAD_TXT_FILE = "Load txt File";
     private Text textTxtIn;
     private static final String[] txtFileExtensions = new String[] { "*.txt" };
@@ -73,8 +74,8 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
                          .applyTo(container);
 
         helloText = new Label(container, SWT.LEFT);
-        helloText.setText("This Run Config lets you analyze text files. "
-                + "Please chose a file here. Analysis can be chosen in the next Tab.");
+        helloText.setText("This Run Configuration lets you analyze text files. \n"
+                + "Please choose a file here:");
 
         // ---------- Create Listeners
         final ModifyListener modifyListener = (ModifyEvent e) -> {
@@ -104,9 +105,12 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
                 TEXT_LOAD_TXT_FILE, shell, true);
 
         final Button localFileSystemButton = new Button(container, SWT.NONE);
-        localFileSystemButton.setText("Chose txt file...");
+        localFileSystemButton.setText("Choose txt file...");
         localFileSystemButton.addSelectionListener(localFileSystemListener);
 
+        
+        analysisText = new Label(container, SWT.LEFT);
+        analysisText.setText("Please choose the Analysis here:");
        
         // ----------- Load Analysis from Service Providers
 		// folder;
@@ -150,7 +154,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
     
     @Override
     public String getName() {
-        return "Data";
+        return "Text-Analysis";
     }
 
     @Override
