@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: AnalysisAsPlugin
+Bundle-SymbolicName: analysisAsPlugin;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: analysisasplugin.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ textAnalysis.provider
+Automatic-Module-Name: analysisAsPlugin
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-ActivationPolicy: lazy

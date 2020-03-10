@@ -17,7 +17,7 @@ import textAnalysis.provider.AProvider;
 
 public class AnalyzerAttributes {
 	
-	private static final boolean cheatVersion = false;
+	private static final boolean cheatVersion = true;
 
     // Names of the Attributes
     public static final String FILE_NAME = "textAnalysis.core.FILE_TEXT";
@@ -91,19 +91,33 @@ public class AnalyzerAttributes {
         
         URLClassLoader ucl = new URLClassLoader(urls);
         
-        return ucl;	
-        
-        
+        return ucl;	   
     }
     
-    
+    protected static URLClassLoader getBundleClassLoader() {
+    	String folder = "C:\\Maike\\KIT\\PraktikumWfAM\\workspace\\textAnalysis4Eclipse\\bundles\\";
+    	//File loc1 = new File(folder + "analysisAsPlugin\\");
+    	File loc2 = new File(folder + "textAnalysis.core.subst\\");
 
+    	
+    	try { // loc1.toURI().toURL(), 
+			URL[] urls = new URL[] {loc2.toURI().toURL()};
+			return new URLClassLoader(urls);
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+    	
+    }
+    
     
     protected static List<AProvider> loadServices(String folder) {
     	ServiceLoader<AProvider> analysisServices;
     	
     	if (cheatVersion) {	
-    		analysisServices = ServiceLoader.load(AProvider.class);
+    		//analysisServices = ServiceLoader.load(AProvider.class);
+    		analysisServices = ServiceLoader.load(AProvider.class, getBundleClassLoader());
     	} else { 
             ClassLoader classloader = AnalyzerAttributes.getURLCL(folder);
 	        analysisServices = ServiceLoader.load(textAnalysis.provider.AProvider.class, classloader);
