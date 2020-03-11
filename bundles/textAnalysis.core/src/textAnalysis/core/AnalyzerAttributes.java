@@ -6,23 +6,19 @@ import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
-//import java.net.URLClassLoader;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.lang.ClassLoader;
-//import java.lang.Class;
 
 import textAnalysis.provider.AProvider;
 
 public class AnalyzerAttributes {
 	
-	private static final boolean cheatVersion = false;
+	private static final String PROVIDER_INTERFACE = "textAnalysis.provider.AProvider";
 
     // Names of the Attributes
     public static final String FILE_NAME = "textAnalysis.core.FILE_TEXT";
@@ -81,129 +77,37 @@ public class AnalyzerAttributes {
     	
     	File loc = new File(configFolder);
         File[] flist = loc.listFiles((FileFilter) file -> file.getPath().toLowerCase().endsWith(".jar"));
-        System.out.println("file list: " + flist.length);
-
         URL[] urls = new URL[flist.length];
-        for (int i = 0; i < flist.length; i++) {
-            try {
-                urls[i] = flist[i].toURI().toURL();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("found # urls: " + urls.length);
         
-       // URLClassLoader ucl = new URLClassLoader(urls);
-
-		try {
-			Class cls = Class.forName("textAnalysis.provider.AProvider");
-			ClassLoader cLoader = cls.getClassLoader();
+        try {
+        	for (int i = 0; i < flist.length; i++) {
+                urls[i] = flist[i].toURI().toURL();
+        	}
+        	
+			ClassLoader cLoader = Class.forName(PROVIDER_INTERFACE).getClassLoader();
 		    URLClassLoader cl = new URLClassLoader(urls, cLoader);
 		    return cl;	 
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
+		    
+		} catch (ClassNotFoundException | MalformedURLException e) {
 			e.printStackTrace();
 		}
-		return null;
-        
-    }
-    
-    protected static URLClassLoader getBundleClassLoader() {
-    	String folder = "C:\\Maike\\KIT\\PraktikumWfAM\\workspace\\textAnalysis4Eclipse\\bundles\\";
-    	File loc1 = new File(folder + "textAnalysis.core\\");
-    	//File loc2 = new File(folder + "textAnalysis.core\\");
-
-    	try { // loc1.toURI().toURL(), 
-			URL[] urls = new URL[] {loc1.toURI().toURL()};
-			return new URLClassLoader(urls);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	return null;	
+		return null; // TODO can we make the error handling a little nicer?   
     }
    
-    
+    /***
+     * Loads services as jars from  folder 
+     * @param folder: Where the jars are
+     * @return a list of services
+     */
     protected static List<AProvider> loadServices(String folder) {
     	ServiceLoader<AProvider> analysisServices;
         List<AProvider> providerList = new LinkedList<>();
 
-    	if (cheatVersion) {	
-    		String fol = "C:\\Maike\\KIT\\PraktikumWfAM\\workspace\\textAnalysis4Eclipse\\"
-    				+ "bundles\\analysisAsPlugin\\bin\\";
-    		File fil = new File(fol);
-    		// analysisasplugin/FullstopSpaceChecker (wrong name: FullstopSpaceChecker)
-    		URL dirUrl;
-    		URL provUrl;
-    		String folProv = "C:\\Maike\\KIT\\PraktikumWfAM\\workspace\\textAnalysis4Eclipse\\"
-    				+ "bundles\\textAnalysis.provider\\bin\\";
-    		File fil2 = new File(folProv);
-    		
-			try {
-				dirUrl = fil.toURL();
-				provUrl = fil2.toURL();
-				
-				Class cls = Class.forName("textAnalysis.provider.AProvider");
-		        ClassLoader cLoader = cls.getClassLoader();
-		        URLClassLoader cl = new URLClassLoader(new URL[] {dirUrl}, cLoader);
-			         
-//	    		URLClassLoader cl = new URLClassLoader(new URL[] {dirUrl, provUrl}, 
-//	    				ClassLoader.getSystemClassLoader());
-	    		//, getClass().class.getClassLoader());  
-	    		Class loadedClass = cl.loadClass("analysisasplugin.FullstopSpaceChecker");
-	    		AProvider obj = (AProvider) loadedClass.newInstance();
-	    		// gibt classcastexception weil whrschl in untersch. classloadern
-	    		providerList.add(obj);
-    		//obj.doSomething();
-    		
-			} catch (MalformedURLException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}  
-    		//analysisServices = ServiceLoader.load(AProvider.class);
-    		//analysisServices = ServiceLoader.load(AProvider.class, getBundleClassLoader());
-//    		ResourceFinder finder = new ResourceFinder("META-INF/services/");
-    	
-//        	String folder2 = "analysisAsPlugin/META-INF/services/";
-//    		ResourceFinder finderA = new ResourceFinder(folder2);
-    		// finds if only one line in file in this project
-//    		try {
-    			// textAnalysis.core.subst.ASimpleAnalysis
-//    			textAnalysis.core.subst.CharCountAnalyis
-//    			textAnalysis.core.subst.WordCountAnalysis
-    			
-//				List<Class> impls = finder.findAllImplementations(AProvider.class);
-//				for (Class i: impls) {
-//					try {
-//						AProvider prov = (AProvider) i.newInstance();
-//						providerList.add(prov);
-//					} catch (InstantiationException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					} catch (IllegalAccessException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//					
-//				}
-//			} catch (ClassNotFoundException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-    	} else { 
-            ClassLoader classloader = AnalyzerAttributes.getURLCL(folder);
-	        analysisServices = ServiceLoader.load(textAnalysis.provider.AProvider.class, classloader);
-	        for (AProvider service : analysisServices) { // FIXME, throws ClassNotFoundDef
-	        	providerList.add(service);
-	        }
-    	}
-    	
-    	System.out.println("Provider List Length " + String.valueOf(providerList.size()));
-    	
+        ClassLoader classloader = AnalyzerAttributes.getURLCL(folder);
+	    analysisServices = ServiceLoader.load(textAnalysis.provider.AProvider.class, classloader);
+	    for (AProvider service : analysisServices) { 
+		    providerList.add(service);
+	    }	
         return providerList;
     }
     
