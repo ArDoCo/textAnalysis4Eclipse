@@ -29,8 +29,17 @@ public class AnalysisLoader {
 
 	private static final String PROVIDER_INTERFACE = "textAnalysis.provider.AProvider";
 	private static final Class<AProvider> ANALYSIS_INTERFACE = textAnalysis.provider.AProvider.class;
-
-
+	
+	protected static final String ERROR_MSG_DIRECTORY = "There is a Problem with the Analysis-Directory: \n"
+			+ "It is either not existing, falsy specified (wrong name) in the config file,"
+			+ "or not a directory. \n" 
+			+ "Find the configuration File that specifies the folder in: "
+			+ CONFIG_FILE_LOCATION + DEFAULT_CONFIG_FILE_NAME;
+	protected static final String ERROR_MSG_MALFORMED_URL = "The analysis files in the given directory can not be converted to URLs:";
+	protected static final String ERROR_MSG_IO_DIR = "IO Exception when loading the Analysis Source Directory:";
+	protected static final String ERROR_MSG_PROVIDER_I = "The PROVIDER_INTERFACE can not be found:";
+	
+	
     /**
      * Reads the configuration file and returns the name of the folder that is specified in it.
      * This is the folder where the Analysis-Jars are supposed to be.

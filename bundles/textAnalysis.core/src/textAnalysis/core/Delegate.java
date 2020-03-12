@@ -138,19 +138,19 @@ public class Delegate extends LaunchConfigurationDelegate {
 		try {
 			folder = AnalysisLoader.getAnalysisSrcDirectory();
 			if (folder == null) {
-				String error = "The path and / or folder name does not exists or is not a directory";
+				String error = AnalysisLoader.ERROR_MSG_DIRECTORY;
 				saveErrorFile(errorFile, error);
 			} else {
 				analysisProviders = AnalysisLoader.loadAnalysis(folder);
 			}
 		} catch (MalformedURLException e2) {
-			String error = "The analysis files in the given directory can not be converted to URLs: \n" + e2.toString();
+			String error = AnalysisLoader.ERROR_MSG_MALFORMED_URL + "\n" + e2.toString();
 			saveErrorFile(errorFile, error);
 		} catch (IOException e2) {
-			String error = "IO Exception when loading the Analysis Source Directory: \n" + e2.toString();
+			String error = AnalysisLoader.ERROR_MSG_IO_DIR + "\n" + e2.toString();
 			saveErrorFile(errorFile, error);
 		} catch (ClassNotFoundException e2) {
-			String error = "The PROVIDER_INTERFACE can not be found: \n" + e2.toString();
+			String error = AnalysisLoader.ERROR_MSG_PROVIDER_I + "\n" + e2.toString();
 			saveErrorFile(errorFile, error);
 		}
 		return analysisProviders;
