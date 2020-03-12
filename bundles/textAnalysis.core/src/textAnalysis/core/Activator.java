@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
     // The plug-in ID
-    public static final String PLUGIN_ID = "PluginTest4"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "textAnalysis.core"; 
 
     // The shared instance
     private static Activator plugin;
@@ -23,16 +23,12 @@ public class Activator extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
     	super.start(context);
-      //  Bundle[] bundles = context.getBundles(); 
-      //  System.out.print("In Activator start: Bundles from Context length: ");
-      //  System.out.println(bundles.length);
         plugin = this;
     }
 
     @Override
     public void stop(BundleContext context) throws Exception {
         plugin = null;
-        // super.stop(context);
     }
 
     /**

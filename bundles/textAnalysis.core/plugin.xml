@@ -5,7 +5,7 @@
    <extension point="org.eclipse.debug.core.launchConfigurationTypes">
    		<launchConfigurationType
 	   		 id="textAnalysis.core.LaunchConfigurationType"
-	   		 delegate="textAnalysis.core.AnalyzerDelegate"
+	   		 delegate="textAnalysis.core.Delegate"
 	   		 modes="run, debug"
 	         name="TextAnalyzer">
   		</launchConfigurationType>
@@ -14,7 +14,7 @@
    <extension point="org.eclipse.debug.ui.launchConfigurationTabGroups">
         <launchConfigurationTabGroup
             type="textAnalysis.core.LaunchConfigurationType"
-            class="textAnalysis.core.AnalyzerTabGroup" 
+            class="textAnalysis.core.TabGroup" 
             id="textAnalysis.core.AnalyzerTabGroup">
             <launchMode 
                   mode="debug"

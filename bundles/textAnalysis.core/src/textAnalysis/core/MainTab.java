@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Text;
 import textAnalysis.core.listener.fileopening.OpenLocalFileSystemButtonListener;
 import textAnalysis.provider.AProvider;
 
-public class ChoseFileTab extends AbstractLaunchConfigurationTab {
+public class MainTab extends AbstractLaunchConfigurationTab {
 
     // TODO (3) output folder definieren koennen (niedrigere Prio)
     // TODO (2) choose all, choose non button
@@ -41,8 +41,9 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
     // -> mal noch in swt2 folien schauen
     // oder txt mit dictionary einbinden und nach schreibfehlern schauen
     // fortgeschrittener: language tool
+	// TODO check if analysis file would be overritten
 
-
+	// TODO write in tab where config file is / has to be. 
     private Label helloText;
     private Label analysisText;
     private static final String TEXT_LOAD_TXT_FILE = "Load txt File";
@@ -56,7 +57,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
     private List<AProvider> analysisList;
 
 
-    public ChoseFileTab() {
+    public MainTab() {
         super();
         analysisList = new LinkedList<>();
         analysisButtons = new HashMap<>();
@@ -115,13 +116,18 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         // ----------- Load Analysis from Service Providers
 		// folder;
 		try {
-			String folder = AnalyzerAttributes.getAnalysisSrcFolder();
+			String folder = AnalysisLoader.getAnalysisSrcDirectory(); 
 		
-			if (folder.equals("")) {
-				addRedLabel("No Folder is specified in <user.dir>/.textanalysisconfig for Analysis jars.", 
+			if (folder == null) { // TODO nicer,?
+				addRedLabel("There is a Problem with the Analysis-Directory: \n"
+						+ "It is either not existing, falsy specified (wrong name) in the config file,"
+						+ "or not a directory. \n"
+						+ "Find the configuration File that specifies the folder in: "
+						+ AnalysisLoader.CONFIG_FILE_LOCATION 
+						+ AnalysisLoader.DEFAULT_CONFIG_FILE_NAME, 
 						container);
 			} else {
-				List<AProvider> serviceProviders = AnalyzerAttributes.loadServices(folder);
+				List<AProvider> serviceProviders = AnalysisLoader.loadAnalysis(folder);
 
 				if (serviceProviders.size() == 0) {
 			    	addRedLabel("No Analysis found.", container);
@@ -162,17 +168,17 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
         try {
 
             // ---- Files
-            List<String> fileNames = configuration.getAttribute(AnalyzerAttributes.FILE_NAME, dummy_text);
+            List<String> fileNames = configuration.getAttribute(PluginAttributes.FILE_NAME, dummy_text);
             String fileName = String.join(";", fileNames);
             textTxtIn.setText(fileName);
 
             // ---- Analysis-Services
             Map<String, String> service_checkbox_values = configuration.getAttribute(
-                    AnalyzerAttributes.CHECKBOX_ACTIVATION, new HashMap<String, String>());
+            		PluginAttributes.CHECKBOX_ACTIVATION_STATUS, new HashMap<String, String>());
             for (Map.Entry<String, String> service_entry : service_checkbox_values.entrySet()) {
             	// This checks that if an analysis that was previous loaded but now is not there anymore, 
             	// there is no error. Only currently available Analyzes get a checkbox.
-            	if (AnalyzerAttributes.getMatchingProvider(analysisList, service_entry.getKey()) != null) {
+            	if (AnalysisLoader.getAnalysisFrom(analysisList, service_entry.getKey()) != null) {
             		analysisButtons.get(service_entry.getKey())
                     .setSelection(Boolean.valueOf(service_entry.getValue()));
             	}
@@ -190,7 +196,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
 
         // ---- Files
         List<String> file_names = Arrays.asList(textTxtIn.getText().split(";"));
-        configuration.setAttribute(AnalyzerAttributes.FILE_NAME, file_names);
+        configuration.setAttribute(PluginAttributes.FILE_NAME, file_names);
 
         // ---- Analysis
         // We have to convert bools to string because attributes can either save only bool or a map of string,string.
@@ -200,7 +206,7 @@ public class ChoseFileTab extends AbstractLaunchConfigurationTab {
             checkbox_activation.put(entry.getKey(), 
             		Boolean.valueOf(entry.getValue().getSelection()).toString());
         }
-        configuration.setAttribute(AnalyzerAttributes.CHECKBOX_ACTIVATION, checkbox_activation);
+        configuration.setAttribute(PluginAttributes.CHECKBOX_ACTIVATION_STATUS, checkbox_activation);
 
     }
 
