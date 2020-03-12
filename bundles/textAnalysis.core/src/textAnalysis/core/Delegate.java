@@ -29,7 +29,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.LaunchConfigurationDelegate;
 
-import textAnalysis.provider.AProvider;
+import textAnalysis.provider.AnalysisProvider;
 
 /***
  * This class handles what happens when the runConfig is run. It calls the
@@ -52,15 +52,15 @@ public class Delegate extends LaunchConfigurationDelegate {
 			throws CoreException {
 
 		List<String> fileNames = configuration.getAttribute(PluginAttributes.FILE_NAME, new ArrayList<String>());
-		List<AProvider> analysisObjs = getAnalysisObjects(fileNames.get(0));
+		List<AnalysisProvider> analysisObjs = getAnalysisObjects(fileNames.get(0));
 
-		List<AProvider> analysisToCompute = new LinkedList<>();
+		List<AnalysisProvider> analysisToCompute = new LinkedList<>();
 		Map<String, String> analysisCheckboxesStatus = configuration
 				.getAttribute(PluginAttributes.CHECKBOX_ACTIVATION_STATUS, new HashMap<String, String>());
 
 		for (Map.Entry<String, String> entry : analysisCheckboxesStatus.entrySet()) {
 			if (Boolean.valueOf(entry.getValue())) {
-				Optional<AProvider> s = AnalysisLoader.getAnalysisFrom(analysisObjs, entry.getKey());
+				Optional<AnalysisProvider> s = AnalysisLoader.getAnalysisFrom(analysisObjs, entry.getKey());
 				if (s.isPresent()) {
 					analysisToCompute.add(s.get());
 				}
@@ -98,7 +98,7 @@ public class Delegate extends LaunchConfigurationDelegate {
 				List<String> textToAnalyze = getLinesInFile(fileName);
 
 				// Add Analysis outputs
-				for (AProvider aP : analysisToCompute) {
+				for (AnalysisProvider aP : analysisToCompute) {
 					StartElement analysisStartEl = eventFactory.createStartElement("", "", aP.getName());
 					eventWriter.add(analysisStartEl);
 					List<XMLEvent> events = aP.getXMLEvents(textToAnalyze);
@@ -129,9 +129,9 @@ public class Delegate extends LaunchConfigurationDelegate {
 	 * @return The Analysis Objects, or an empty List if there was an error or no
 	 *         Analysis were found.
 	 */
-	private List<AProvider> getAnalysisObjects(String fileName) {
+	private List<AnalysisProvider> getAnalysisObjects(String fileName) {
 		String folder = null;
-		List<AProvider> analysisProviders = new LinkedList<>();
+		List<AnalysisProvider> analysisProviders = new LinkedList<>();
 
 		String errorFile = getFileNameWithoutExtension(fileName);
 

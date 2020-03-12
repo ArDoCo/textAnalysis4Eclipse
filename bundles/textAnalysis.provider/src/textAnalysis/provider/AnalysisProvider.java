@@ -5,7 +5,7 @@ import java.util.List;
 import javax.xml.stream.events.XMLEvent;
 
 
-public interface AProvider {
+public interface AnalysisProvider {
 
     String getName();
 

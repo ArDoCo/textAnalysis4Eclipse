@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import textAnalysis.core.listener.fileopening.OpenLocalFileSystemButtonListener;
-import textAnalysis.provider.AProvider;
+import textAnalysis.provider.AnalysisProvider;
 
 public class MainTab extends AbstractLaunchConfigurationTab {
 
@@ -54,7 +54,7 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 	private static final String[] txtFileExtensions = new String[] { "*.txt" };
 
 	private Map<String, Button> analysisButtons;
-	private List<AProvider> analysisList;
+	private List<AnalysisProvider> analysisList;
 
 	public MainTab() {
 		super();
@@ -113,13 +113,13 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 			if (dir == null) { 
 				addRedLabel(AnalysisLoader.ERROR_MSG_DIRECTORY, container);
 			} else {
-				List<AProvider> serviceProviders = AnalysisLoader.loadAnalysis(dir);
+				List<AnalysisProvider> serviceProviders = AnalysisLoader.loadAnalysis(dir);
 
 				if (serviceProviders.size() == 0) {
 					addRedLabel("No Analysis found. Check if the folder is correctly specified in the config file in: "
 							+ AnalysisLoader.CONFIG_FILE_LOCATION + AnalysisLoader.DEFAULT_CONFIG_FILE_NAME, container);
 				} else { // create a checkbox for every analysis
-					for (AProvider analysis : serviceProviders) {
+					for (AnalysisProvider analysis : serviceProviders) {
 						Button b1 = new Button(container, SWT.CHECK);
 						b1.setText(analysis.getName());
 						b1.addSelectionListener(checkboxSelectionListener);
@@ -220,7 +220,7 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 		// TODO chosen analysis have to be valid!
 		// ask Analysis if they are Valid 
 		boolean analysisAreValid = true;
-		for (AProvider ana : analysisList) {
+		for (AnalysisProvider ana : analysisList) {
 			if (!ana.isValid()) {
 				analysisAreValid = false;
 			}

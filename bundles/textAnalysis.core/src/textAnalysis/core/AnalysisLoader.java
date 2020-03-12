@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
-import textAnalysis.provider.AProvider;
+import textAnalysis.provider.AnalysisProvider;
 
 /**
  * This Class provides helper methods for the dynamic loading of Analysis that are provided by the user.
@@ -27,8 +27,8 @@ public class AnalysisLoader {
 	protected static final String CONFIG_FILE_LOCATION = System.getProperty("user.home");
 	private static final String ANALYSIS_FILE_TYPE = ".jar";
 
-	private static final String PROVIDER_INTERFACE = "textAnalysis.provider.AProvider";
-	private static final Class<AProvider> ANALYSIS_INTERFACE = textAnalysis.provider.AProvider.class;
+	private static final String PROVIDER_INTERFACE = "textAnalysis.provider.AnalysisProvider";
+	private static final Class<AnalysisProvider> ANALYSIS_INTERFACE = textAnalysis.provider.AnalysisProvider.class;
 	
 	protected static final String ERROR_MSG_DIRECTORY = "There is a Problem with the Analysis-Directory: \n"
 			+ "It is either not existing, falsy specified (wrong name) in the config file,"
@@ -118,12 +118,12 @@ public class AnalysisLoader {
      * @throws MalformedURLException If the files in the directory can not be converted to urls
      * @throws ClassNotFoundException If the PROVIDER_INTERFACE can not be found.
      */
-    protected static List<AProvider> loadAnalysis(String srcDir) throws MalformedURLException, ClassNotFoundException {
+    protected static List<AnalysisProvider> loadAnalysis(String srcDir) throws MalformedURLException, ClassNotFoundException {
         ClassLoader classloader = createProviderClassLoader(srcDir);
-        ServiceLoader<AProvider> foundAnalysis = ServiceLoader.load(ANALYSIS_INTERFACE, classloader);
+        ServiceLoader<AnalysisProvider> foundAnalysis = ServiceLoader.load(ANALYSIS_INTERFACE, classloader);
 	    
-        List<AProvider> providerList = new LinkedList<>();
-        for (AProvider service : foundAnalysis) { 
+        List<AnalysisProvider> providerList = new LinkedList<>();
+        for (AnalysisProvider service : foundAnalysis) { 
 		    providerList.add(service);
 	    }	
         return providerList;
@@ -135,7 +135,7 @@ public class AnalysisLoader {
      * @param analysisName The Name that should be matching
      * @return An Optional with the matching Analysis-Object if one was found. 
      */
-    protected static Optional<AProvider> getAnalysisFrom(List<AProvider> analysisList, String analysisName) {
+    protected static Optional<AnalysisProvider> getAnalysisFrom(List<AnalysisProvider> analysisList, String analysisName) {
         return analysisList.stream().filter(s -> s.getName().equals(analysisName)).findFirst();
     }
 	
