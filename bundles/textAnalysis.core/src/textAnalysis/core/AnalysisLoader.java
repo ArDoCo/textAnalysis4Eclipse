@@ -53,7 +53,7 @@ public class AnalysisLoader {
      * @return The path+folder name if it exists and is a directory else null 
      * @throws IOException
      */
-	protected static String getAnalysisSrcDirectory() throws IOException { // TODO check handling ("" vs null)
+	protected static String getAnalysisSrcDirectory() throws IOException {
 
 		File configFile = new File(CONFIG_FILE_LOCATION + DEFAULT_CONFIG_FILE_NAME);
 		

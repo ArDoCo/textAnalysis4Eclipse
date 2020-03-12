@@ -33,19 +33,6 @@ import textAnalysis.core.listener.fileopening.OpenLocalFileSystemButtonListener;
 import textAnalysis.provider.AnalysisProvider;
 
 public class MainTab extends AbstractLaunchConfigurationTab {
-
-	// TODO (3) output folder definieren koennen (niedrigere Prio)
-	// TODO (2) choose all, choose non button
-	// TODO (2) coole Analysen:
-	// stanford core nlp und dann s�tze aufsplitten, w�rter pro satz, warnung
-	// bei > 24
-	// regelwerk von "den sophisten" f�r das Schreiben von requirements
-	// -> mal noch in swt2 folien schauen
-	// oder txt mit dictionary einbinden und nach schreibfehlern schauen
-	// fortgeschrittener: language tool
-	// TODO check if analysis file would be overritten
-	// TODO write in tab where config file is / has to be.
-
 	
 	private Label introText;
 	private Label analysisText;
@@ -198,7 +185,7 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 
 	@Override
 	public void setDefaults(ILaunchConfigurationWorkingCopy arg0) {
-		// TODO Auto-generated method stub
+		// no defaults!
 	}
 
 	@Override
@@ -217,7 +204,7 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 			}
 		}
 
-		// TODO chosen analysis have to be valid!
+		// TODO only chosen analysis have to be valid!
 		// ask Analysis if they are Valid 
 		boolean analysisAreValid = true;
 		for (AnalysisProvider ana : analysisList) {
@@ -238,14 +225,13 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 	}
 
 	@Override
-	protected boolean isDirty() { // TODO implement method
-		System.out.println("is dirty");
+	protected boolean isDirty() { 
+		// Seems like this method is never called. And the still functionality works.
 		return true;
 	}
 
 	@Override
 	public boolean canSave() { // TODO implement method
-		System.out.println("can save");
 		return true;
 	}
 
