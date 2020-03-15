@@ -46,18 +46,110 @@ public class Delegate extends LaunchConfigurationDelegate {
 	private static final String ANALYSIS_XML_TAG = "textAnalysis";
 	private static final String ANALYSIS_FILE_ENDING = "_analysis.xml";
 	private static final String ERROR_FILE_ENDING = "_error.txt";
-
+	
+	private static final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+	private static final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
+	private static final XMLEvent end = eventFactory.createDTD("\n");
+	private static final EndElement ANALYSIS_END_TAG = eventFactory.createEndElement("", "", ANALYSIS_XML_TAG);
+	private static final StartElement  ANALYSIS_START_TAG = eventFactory.createStartElement("", "", ANALYSIS_XML_TAG);
+	
 	@Override
 	public void launch(ILaunchConfiguration configuration, String arg1, ILaunch arg2, IProgressMonitor arg3)
 			throws CoreException {
 
-		List<String> fileNames = configuration.getAttribute(PluginAttributes.FILE_NAME, new ArrayList<String>());
-		List<AnalysisProvider> analysisObjs = getAnalysisObjects(fileNames.get(0));
-
-		List<AnalysisProvider> analysisToCompute = new LinkedList<>();
+		List<String> fileNames = configuration.getAttribute(PluginAttributes.FILE_NAME, new ArrayList<String>());		
 		Map<String, String> analysisCheckboxesStatus = configuration
 				.getAttribute(PluginAttributes.CHECKBOX_ACTIVATION_STATUS, new HashMap<String, String>());
+		
+		List<AnalysisProvider> analysisToExecute = getAnalysisToExecute(analysisCheckboxesStatus, 
+				fileNames.get(0));
 
+		// ------ Compute Analysis for each input file
+		for (String fileName : fileNames) {
+
+			// create file name of output File
+			String outputFileName = getFileNameWithoutExtension(fileName) + ANALYSIS_FILE_ENDING;
+
+			try {
+				XMLEventWriter eventWriter = setupEventWriter(outputFileName);
+				List<String> textToAnalyze = getLinesInFile(fileName);
+
+				// Add Analysis outputs
+				for (AnalysisProvider aP : analysisToExecute) {
+					List<XMLEvent> events = getElementsFromAnalysis(aP, textToAnalyze);
+					for (XMLEvent e : events) {
+						eventWriter.add(e);
+					}	
+				}
+				closeEventWriter(eventWriter);
+				
+			} catch (FileNotFoundException | XMLStreamException e1) {
+				String error = "Problem with xml Generation: " + e1.toString();
+				saveErrorFile(getFileNameWithoutExtension(fileName), error);
+			}
+		}
+	}
+	
+	/***
+	 * Retrieves the XML Events from the specified Analysis and enrich with structural Elements
+	 * @param aP the Analysis
+	 * @param textToAnalyze The lines of the File to analyze.
+	 * @return A List of Events
+	 */
+	private List<XMLEvent> getElementsFromAnalysis(AnalysisProvider aP, List<String> textToAnalyze){
+		List<XMLEvent> events =  new LinkedList<>();
+		events.add(eventFactory.createStartElement("", "", aP.getName()));
+		events.addAll(aP.getXMLEvents(textToAnalyze));
+		events.add(eventFactory.createEndElement("", "", aP.getName()));
+		events.add(end);
+		return events;
+	}
+
+	/***
+	 * Close the EventWriter including necessary end tags
+	 * @param eventWriter the EventWriter that should be closed
+	 * @throws XMLStreamException
+	 */
+	private void closeEventWriter(XMLEventWriter eventWriter) throws XMLStreamException {
+		eventWriter.add(ANALYSIS_END_TAG);
+		eventWriter.add(end);
+		eventWriter.add(eventFactory.createEndDocument());
+		eventWriter.close();
+	}
+
+	/***
+	 * Setup the EventWriter for one output XML.
+	 * @param outputFileName The Name of the output file
+	 * @return The configured EventWriter including the starting tag
+	 * @throws XMLStreamException
+	 * @throws FileNotFoundException
+	 */
+	private XMLEventWriter setupEventWriter(String outputFileName) throws XMLStreamException, FileNotFoundException {
+		XMLEventWriter eventWriter = outputFactory.createXMLEventWriter(new FileOutputStream(outputFileName));
+		
+		// create and write Start Tag
+		StartDocument startDocument = eventFactory.createStartDocument();
+		eventWriter.add(startDocument);
+
+		// create analysis open tag
+		eventWriter.add(end);
+		eventWriter.add(ANALYSIS_START_TAG);
+		eventWriter.add(end);
+		return eventWriter;
+	}
+
+	/***
+	 * Find out which Analysis should be executed. 
+	 * @param analysisCheckboxesStatus The Checkbox Status from the Config
+	 * @param analysisObjs The Analysis
+	 * @return A List with instantiated Analysis that should be executed
+	 * @throws CoreException
+	 */
+	private List<AnalysisProvider> getAnalysisToExecute(Map<String, String> analysisCheckboxesStatus,
+			String fileNameForError) throws CoreException {
+		List<AnalysisProvider> analysisObjs = getAnalysisObjects(fileNameForError); 
+		List<AnalysisProvider> analysisToCompute = new LinkedList<>();
+		
 		for (Map.Entry<String, String> entry : analysisCheckboxesStatus.entrySet()) {
 			if (Boolean.valueOf(entry.getValue())) {
 				Optional<AnalysisProvider> s = AnalysisLoader.getAnalysisFrom(analysisObjs, entry.getKey());
@@ -66,74 +158,21 @@ public class Delegate extends LaunchConfigurationDelegate {
 				}
 			}
 		}
-
-		// ------ Compute Analysis for each input file
-		for (String fileName : fileNames) {
-
-			// create file name of output File
-			String outputFileName = getFileNameWithoutExtension(fileName) + ANALYSIS_FILE_ENDING;
-
-			// Setup XML
-			XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-
-			try {
-				// create XMLEventWriter
-				XMLEventWriter eventWriter = outputFactory.createXMLEventWriter(new FileOutputStream(outputFileName));
-
-				// create an EventFactory
-				XMLEventFactory eventFactory = XMLEventFactory.newInstance();
-				XMLEvent end = eventFactory.createDTD("\n");
-
-				// create and write Start Tag
-				StartDocument startDocument = eventFactory.createStartDocument();
-				eventWriter.add(startDocument);
-
-				// create analysis open tag
-				eventWriter.add(end);
-				StartElement configStartElement = eventFactory.createStartElement("", "", ANALYSIS_XML_TAG);
-				eventWriter.add(configStartElement);
-				eventWriter.add(end);
-
-				// Get text that should be analyzed
-				List<String> textToAnalyze = getLinesInFile(fileName);
-
-				// Add Analysis outputs
-				for (AnalysisProvider aP : analysisToCompute) {
-					StartElement analysisStartEl = eventFactory.createStartElement("", "", aP.getName());
-					eventWriter.add(analysisStartEl);
-					List<XMLEvent> events = aP.getXMLEvents(textToAnalyze);
-					for (XMLEvent e : events) {
-						eventWriter.add(e);
-					}
-					EndElement analysisEndEl = eventFactory.createEndElement("", "", aP.getName());
-					eventWriter.add(analysisEndEl);
-					eventWriter.add(end);
-				}
-
-				// close XML
-				eventWriter.add(eventFactory.createEndElement("", "", ANALYSIS_XML_TAG));
-				eventWriter.add(end);
-				eventWriter.add(eventFactory.createEndDocument());
-				eventWriter.close();
-			} catch (FileNotFoundException | XMLStreamException e1) {
-				String error = "Problem with xml Generation: " + e1.toString();
-				saveErrorFile(getFileNameWithoutExtension(fileName), error);
-			}
-		}
+		return analysisToCompute;
 	}
 
 	/***
 	 * Load Analysis Objects and save an error file if loading is not successful.
 	 * 
-	 * @param fileName a FileName (and path) for the possible error file.
+	 * @param fileNameForError a FileName (and path) for the possible error file.
 	 * @return The Analysis Objects, or an empty List if there was an error or no
 	 *         Analysis were found.
 	 */
-	private List<AnalysisProvider> getAnalysisObjects(String fileName) {
+	private List<AnalysisProvider> getAnalysisObjects(String fileNameForError) {
 		String folder = null;
 		List<AnalysisProvider> analysisProviders = new LinkedList<>();
 
-		String errorFile = getFileNameWithoutExtension(fileName);
+		String errorFile = getFileNameWithoutExtension(fileNameForError);
 
 		try {
 			folder = AnalysisLoader.getAnalysisSrcDirectory();
