@@ -28,6 +28,13 @@ This means that the Classloader used for loading the jars is the one from the pr
 An alternative Implementation would have been to provide Analysis as Eclipse-Plugin. Then my plugin would have to search all installed plugins on the user's computer and find the matching analysis. The implementation with the jars seemed to be easier and more convenient for my first implementation and therefore I chose it. An alternative solution can always be pluged in via the AnalysisLoader class. 
 
 ## What errors are possible and how to handle them?
+A couple of errors will lead to a read message in the Run Configuration UI. 
+-  Problem with the directory for analysis: The directory is either not specified in the configuration file, or it is wrongly specified (doesn't exist or is not a directory, cannot be found).  -> check the entry in the _.textanalysisconfig_ file in your user home directory.
+- The Analysis Files can not be converted to URLs: The analysis-jars in the specified folder can not be converted to URLs. -> something is wrong with the filenames or path. 
+- IO Exception loading the Source Direction. Classical Java IO exception
+- The Provider Interface can not be found. Then something is wrong with the classpath / the Provider implementation is missing. 
 
 ## Future Work
-
+Ideas that can be done by future work:
+- Make the UI of the Run Configuraion a bit prettier
+- Also incorporate complex analysis with own parameters, e.g. by using own Tabs for these Analysis. 
