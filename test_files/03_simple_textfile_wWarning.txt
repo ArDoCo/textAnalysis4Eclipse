@@ -1,0 +1,4 @@
+This is a simple test file with two sentence
+distributed into multiple lines.
+This line is way too long, because it has more than eighty characters. A warning is needed!
+
