@@ -4,7 +4,7 @@ This Project was coded for my Lab "Tools for agile modeling". The Documentation 
 ## Motivation
 This Project provides an Eclipse plugin that provides a run configuration with wicht text files can be loaded and analyzed. This is a first step for a framework that can be used to check consistencies between documentation and code. The Analysis are not hard coded but can be dynamically loaded with the help of the Java ServiceLoader. Find more info on how to provide an analysis in the bundles/provider/Readme.md
 This is how the run configuration looks:
-
+![screenshot of the run configuration dialog](https://github.com/maikefer/textAnalysis4Eclipse/blob/master/docu/screen1.PNG "Run Configuration Dialog of textAnalysis4Eclipse")
 
 ## Setup
 This Project is managed with maven tycho. In the bundles/ folder, you find two eclipse plugins:
@@ -14,6 +14,3 @@ The core-module handles basically everything. The provider-module provides the a
 
 ## How To Run
 You can open the core project in your eclipe workspace and just "run" it. It will open an inner eclipse where the new run configuration is available.
-
-## Prerequesites
-Java Version, Eclipse SDK
