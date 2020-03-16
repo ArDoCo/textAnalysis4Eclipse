@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
@@ -204,15 +205,6 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 			}
 		}
 
-		// TODO only chosen analysis have to be valid!
-		// ask Analysis if they are Valid 
-		boolean analysisAreValid = true;
-		for (AnalysisProvider ana : analysisList) {
-			if (!ana.isValid()) {
-				analysisAreValid = false;
-			}
-		}
-
 		// if at least one Analysis is chosen
 		boolean atLeast1 = false;
 		for (Button b : analysisButtons.values()) {
@@ -220,8 +212,19 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 				atLeast1 = true;
 			}
 		}
+		
+		// if the chosen analysis is / are valid
+		boolean chosenAnalysisAreValid = true;
+		for (Map.Entry<String, Button> buttonEntry : analysisButtons.entrySet()) {
+			if (buttonEntry.getValue().getSelection()) {
+				Optional<AnalysisProvider> analysis = AnalysisLoader.getAnalysisFrom(analysisList, buttonEntry.getKey());
+				if (!analysis.isPresent() || !analysis.get().isValid()) {
+					chosenAnalysisAreValid = false;
+				}
+			}
+		}
 
-		return ((files.length > 0) && filesAreValid && analysisAreValid && atLeast1);
+		return ((files.length > 0) && filesAreValid && atLeast1 && chosenAnalysisAreValid);
 	}
 
 	@Override
