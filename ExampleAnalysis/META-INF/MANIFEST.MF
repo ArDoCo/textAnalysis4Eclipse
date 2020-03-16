@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: DummyAnalysis
+Bundle-SymbolicName: ExampleAnalysis
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: convenience.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ textAnalysis.provider
+Automatic-Module-Name: DummyAnalysis
+Bundle-ActivationPolicy: lazy
