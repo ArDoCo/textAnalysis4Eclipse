@@ -40,9 +40,6 @@ import textAnalysis.provider.AnalysisProvider;
  */
 public class Delegate extends LaunchConfigurationDelegate {
 
-	// TODO (2) basic test ueberlegen / implementieren;
-	// es gibt auch SWTBot tests (siehe vogella), ui test als bonus
-
 	private static final String ANALYSIS_XML_TAG = "textAnalysis";
 	private static final String ANALYSIS_FILE_ENDING = "_analysis.xml";
 	private static final String ERROR_FILE_ENDING = "_error.txt";
