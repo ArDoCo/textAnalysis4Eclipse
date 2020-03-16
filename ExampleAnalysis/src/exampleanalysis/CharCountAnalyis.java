@@ -36,7 +36,6 @@ public class CharCountAnalyis implements AnalysisProvider {
 
 		XMLEventFactory eventFactory = XMLEventFactory.newInstance();
 		warnElements.addAll(EventCreator.addEventWithTabAndEnd(eventFactory.createStartElement("", "", "warnings")));
-		events.add(eventFactory.createDTD("\n"));
 
 		for (int i = 0; i < textToAnalyze.size(); i++) {
 			int lengthOfLine = textToAnalyze.get(i).length();

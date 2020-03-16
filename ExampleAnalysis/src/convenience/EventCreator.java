@@ -41,6 +41,23 @@ public class EventCreator {
 		return events;
 	}
 	
+	public static List<XMLEvent> createEventWithCharacters(String elementName, String character){
+		List<XMLEvent> events = new LinkedList<>();
+		
+		StartElement sElement = eventFactory.createStartElement("", "", elementName);
+		Characters characters = eventFactory.createCharacters(character);
+		EndElement eElement = eventFactory.createEndElement("", "", elementName);
+		events.add(tab);
+		events.add(sElement);
+		events.add(tab);
+		events.add(characters);
+		events.add(tab);
+		events.add(eElement);
+		events.add(end);
+		
+		return events;
+	}
+	
 	public static List<XMLEvent> addEventWithTabAndEnd(XMLEvent event) {
 		List<XMLEvent> events = new LinkedList<>();
 		events.add(tab);

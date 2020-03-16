@@ -99,6 +99,7 @@ public class Delegate extends LaunchConfigurationDelegate {
 	private List<XMLEvent> getElementsFromAnalysis(AnalysisProvider aP, List<String> textToAnalyze){
 		List<XMLEvent> events =  new LinkedList<>();
 		events.add(eventFactory.createStartElement("", "", aP.getName()));
+		events.add(end);
 		events.addAll(aP.getXMLEvents(textToAnalyze));
 		events.add(eventFactory.createEndElement("", "", aP.getName()));
 		events.add(end);
