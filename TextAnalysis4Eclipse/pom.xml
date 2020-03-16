@@ -18,6 +18,7 @@
 
  <modules>
   <module>bundles</module>
+  <module>tests</module>
  </modules>
 
  <repositories>

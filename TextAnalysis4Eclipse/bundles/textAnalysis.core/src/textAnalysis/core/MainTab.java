@@ -234,7 +234,7 @@ public class MainTab extends AbstractLaunchConfigurationTab {
 	}
 
 	@Override
-	public boolean canSave() { // TODO implement method
+	public boolean canSave() {
 		return true;
 	}
 
