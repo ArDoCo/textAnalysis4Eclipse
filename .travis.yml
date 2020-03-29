@@ -1,6 +1,6 @@
 language: java
 jdk: openjdk11
-os: windows
+os: linux
 
 cache:
   directories:
