@@ -1,0 +1,15 @@
+language: java
+jdk: openjdk11
+os: linux
+
+cache:
+  directories:
+  - "$HOME/.m2"
+
+before_install:
+  - git clone --depth 1 https://github.com/kit-sdq/BuildUtilities.git /tmp/BuildUtilities
+  - ". /tmp/BuildUtilities/travis-ci/setupenvironment.sh"
+
+script:
+  - cd TextAnalysis4Eclipse
+  - mvn clean install test verify
