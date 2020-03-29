@@ -9,6 +9,7 @@
 	<parent>
 	    <groupId>textAnalysis4Eclipse</groupId>
   	    <artifactId>textAnalysis4Eclipse</artifactId>
+    	    <relativePath>../pom.xml</relativePath>
 	    <version>1.0.0-SNAPSHOT</version>
 	 </parent>
 
