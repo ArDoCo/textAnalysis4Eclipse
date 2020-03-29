@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/maikefer/textAnalysis4Eclipse.svg?branch=tests)](https://travis-ci.org/maikefer/textAnalysis4Eclipse)
 # textAnalysis4Eclipse
 This Project was coded for my Lab "Tools for Agile Modeling" at the KIT in the Wintersemester 2019/2020. 
 
