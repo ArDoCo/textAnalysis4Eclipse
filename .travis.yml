@@ -11,4 +11,5 @@ before_install:
   - ". /tmp/BuildUtilities/travis-ci/setupenvironment.sh"
 
 script:
+  - cd TextAnalysis4Eclipse
   - mvn clean install test verify
