@@ -7,7 +7,6 @@ Bundle-Activator: textAnalysis.core.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.apache.felix.scr,
- org.eclipse.equinox.util,
  org.eclipse.equinox.event,
  org.eclipse.debug.core,
  org.eclipse.debug.ui,
