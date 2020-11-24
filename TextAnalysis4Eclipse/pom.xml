@@ -8,12 +8,16 @@
   <packaging>pom</packaging>
 
   <properties>
-   <tycho.version>1.5.1</tycho.version>
-   <java.version>11</java.version>
-   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-   <project.build.optimize>true</project.build.optimize>
+    <tycho.version>1.5.1</tycho.version>
+    <java.version>11</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.optimize>true</project.build.optimize>
 
-   <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+
+    <sonar.projectKey>ArDoCo_textAnalysis4Eclipse</sonar.projectKey>
+    <sonar.organization>ardoco</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
  </properties>
 
  <modules>
